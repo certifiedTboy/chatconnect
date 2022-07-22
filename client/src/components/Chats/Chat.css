@@ -1,0 +1,40 @@
+.chatBoxWrapper {
+  display: flex;
+  flex-direction: column;
+  overflow-x: auto;
+  width: 100%;
+}
+.chatMenuWrapper,
+.chatBoxWrapper,
+.chatOnline {
+  padding: 10px;
+  height: 100%;
+}
+
+.chatMenuInput {
+  width: 90%;
+  padding: 10px 0;
+  border: none;
+  border-bottom: 1px solid grey;
+}
+
+.chatBoxTop {
+  height: 350px;
+  padding-right: 10px;
+}
+
+.chatMenuWrapper {
+  height: 350px;
+  overflow-y: scroll;
+  padding-right: 10px;
+}
+
+.emoji-scroll-wrapper {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.typing {
+  color: rgb(119, 119, 119);
+  position: absolute;
+}
