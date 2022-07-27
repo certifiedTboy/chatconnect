@@ -1,8 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ProfileModal from "../layouts/ProfileModal";
 import { sendRequest, getSentRequest } from "../../lib/requestApi";
+import { useDispatch, useSelector } from "react-redux";
+import { showAboutPage, loadingPage } from "./profileActions";
+import { getUserProfile } from "../../lib/userApi";
+import { useParams } from "react-router-dom";
 
-const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
+const ProfileHeader = ({
+  currentUserProfile,
+  userprofilePicture,
+  userFriendsList,
+}) => {
+  const dispatch = useDispatch();
+  const params = useParams();
+  const { user } = useSelector((state) => state.login);
   const [showModal, setShowModal] = useState(false);
 
   const onShowModal = () => {
@@ -15,6 +26,36 @@ const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
 
   const sendFriendRequest = () => {
     sendRequest(currentUserProfile.username);
+  };
+
+  let friendsActionButton = (
+    <button onClick={sendFriendRequest}>Add Friend</button>
+  );
+  if (user === params.username) {
+    friendsActionButton = <div></div>;
+  }
+
+  userFriendsList.map((frnd) => {
+    if (user.includes(frnd.user.username)) {
+      return (friendsActionButton = (
+        <button className="bnt btn-danger" style={{ color: "red" }}>
+          Remove Friend
+        </button>
+      ));
+    }
+  });
+
+  const aboutPage = async () => {
+    dispatch(loadingPage());
+    try {
+      const response = await getUserProfile();
+      if (response.pending) {
+        dispatch(loadingPage());
+      }
+      if (response) {
+        dispatch(showAboutPage());
+      }
+    } catch (error) {}
   };
 
   return (
@@ -38,12 +79,13 @@ const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
               {/* // cover photo */}
               <div className="">
                 {/* profile photo */}
-
-                <img
-                  src={`http://localhost:3001/${userprofilePicture}`}
-                  className="rounded-full md:absolute top-48 inset-x-96 border-4 border-white w-40 h-40"
-                  style={{ width: "168px", height: "168px" }}
-                />
+                <div>
+                  <img
+                    src={`http://localhost:3001/${userprofilePicture}`}
+                    className="rounded-full md:absolute top-48 inset-x-96 border-4 border-white w-40 h-40"
+                    style={{ width: "168px", height: "168px" }}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -68,11 +110,11 @@ const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
               <a href="#">Posts</a>
             </li> */}
               <li className="px-3 font-semibold text-gray-600">
-                <a href="#">About</a>
+                <a onClick={aboutPage} href="#">
+                  About
+                </a>
               </li>
-              <li className="px-3 font-semibold text-gray-600">
-                <a href="#">Friends</a>
-              </li>
+
               <li className="px-3 font-semibold text-gray-600">
                 <a href="#">Photos</a>
               </li>
@@ -80,19 +122,21 @@ const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
               <a href="#">Story Archive</a>
             </li> */}
               <li className="px-3 font-semibold text-gray-600">
-                <button onClick={sendFriendRequest}>Add as Friend</button>
+                {friendsActionButton}
               </li>
             </ul>
             <ul className="flex mb:pl-14">
-              <li className="px-2 font-semibold">
-                <button
-                  className="bg-gray-200 px-5 py-1 rounded-lg text-black font-semibold"
-                  onClick={onShowModal}
-                >
-                  <i className="bx bx-edit-alt mr-2 text-xl"></i>
-                  Edit Profile
-                </button>
-              </li>
+              {user === params.username && (
+                <li className="px-2 font-semibold">
+                  <button
+                    className="bg-gray-200 px-5 py-1 rounded-lg text-black font-semibold"
+                    onClick={onShowModal}
+                  >
+                    <i className="bx bx-edit-alt mr-2 text-xl"></i>
+                    Edit Profile
+                  </button>
+                </li>
+              )}
               <li className="px-2 font-semibold">
                 <button className="bg-gray-200 px-3 py-1 rounded-lg text-black font-semibold">
                   ...

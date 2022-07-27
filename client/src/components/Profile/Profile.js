@@ -1,13 +1,41 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
 import About from "./About";
+import RequestPage from "./RequestPage";
+import FriendsPage from "./FriendsPage";
 import ProfileHeader from "./ProfileHeader";
+import { NavLink } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserProfile } from "../../lib/userApi";
+import { loadingPage, showAllFriends, showAboutPage } from "./profileActions";
+import LoadingSpinner from "../UI/LoadingSpinner";
 
 const Profile = ({
   currentUserProfile,
   userprofilePicture,
   userFriendsList,
 }) => {
+  const [friendsList, setFriendsList] = useState([]);
+  const dispatch = useDispatch();
+  const { profileLoading, friendsRequest, aboutPage, allFriends } = useSelector(
+    (state) => state.profile
+  );
+  const { user } = useSelector((state) => state.login);
+
+  const showAllUsersFriends = async () => {
+    dispatch(loadingPage());
+    try {
+      const response = await getUserProfile(user);
+
+      if (response) {
+        dispatch(showAllFriends());
+        setFriendsList(response.friendsList);
+      }
+      if (response.pending) {
+        dispatch(loadingPage());
+      }
+    } catch (error) {}
+  };
+
   return (
     <div className="h-screen">
       <div className="mt-14 shadow bg-white h-screen">
@@ -15,6 +43,7 @@ const Profile = ({
         <ProfileHeader
           currentUserProfile={currentUserProfile}
           userprofilePicture={userprofilePicture}
+          userFriendsList={userFriendsList}
         />
         {/* END PROFILE HEADER */}
 
@@ -34,23 +63,6 @@ const Profile = ({
                     <p>Full Stack Web Developer</p>
                   </div>
                 </div>
-                {/* // END INTRO */}
-
-                {/* // PHOTOS */}
-                {/* <div className="mr-12 mt-4">
-                  <div
-                    className="p-4 shadow rounded-lg bg-white w-80"
-                    id="intro"
-                  >
-                    <div className="flex justify-between">
-                      <h1 className="font-bold text-xl">Photos</h1>
-                      <a href="#" className="text-lg text-blue-700">
-                        See All Photos
-                      </a>
-                    </div>
-                  </div>
-                </div> */}
-                {/* // END PHOTOS */}
 
                 {/* // FRIENDS */}
                 <div className="mr-12 mt-4">
@@ -61,30 +73,32 @@ const Profile = ({
                     {/* Header */}
                     <div className="flex justify-between">
                       <h1 className="font-bold text-xl">Friends</h1>
-                      <Link
-                        to="/friends/myId"
+                      <a
+                        onClick={showAllUsersFriends}
                         className="text-lg text-blue-700 hover:bg-blue-200"
                       >
                         See All Friends
-                      </Link>
+                      </a>
                     </div>
                     {/* List */}
                     <div className="">
-                      <p className="text-base text-gray-400">1000 friends</p>
+                      <p className="text-base text-gray-400">
+                        {userFriendsList.length} friends
+                      </p>
                       <div className="grid grid-cols-3 gap-1">
                         {userFriendsList.map((friend) => {
                           return (
                             <div className="bg-white p-0.5">
                               <img
-                                src="./images/profile_photo_cat.jpg"
+                                src={`http://localhost:3001/${friend.profilePicture}`}
                                 className="w-24 h-24 rounded-md mt-2 cursor-pointer"
                               />
-                              <Link
-                                to={`/profile/friendId`}
+                              <NavLink
+                                to={`/user/userprofile/${friend.user.username}`}
                                 className="font-semibold text-sm"
                               >
-                                {friend.friendName}
-                              </Link>
+                                {friend.user.username}
+                              </NavLink>
                             </div>
                           );
                         })}
@@ -103,7 +117,12 @@ const Profile = ({
                 {/* END CREATE POST */}
 
                 {/* POST */}
-                <About />
+                {profileLoading === true && <LoadingSpinner />}
+                {aboutPage === true && <About />}
+                {friendsRequest === true && <RequestPage />}
+                {allFriends === true && (
+                  <FriendsPage friendsList={userFriendsList} />
+                )}
                 {/* END POST */}
               </div>
               {/* // END POST LIST */}

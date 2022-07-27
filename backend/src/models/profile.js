@@ -8,6 +8,7 @@ const profileSchema = new Schema({
       ref: "user",
     },
     username: String,
+    name: String,
   },
 });
 

@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const expressJwt = require("express-jwt");
 require("dotenv").config();
 const User = require("../models/user");
+const Profile = require("../models/profile");
 
 // user signup configuration
 exports.signup = async (req, res) => {
@@ -9,6 +10,17 @@ exports.signup = async (req, res) => {
     const user = await User.findOne({ username: req.body.username });
     if (!user) {
       const newUser = await new User(req.body);
+
+      const userProfile = await new Profile({
+        profilePicture: "uploads/dummyimage.jpg",
+        user: {
+          username: newUser.username,
+          name: newUser.name,
+          id: newUser._id,
+        },
+      });
+      newUser.profile = userProfile;
+      await userProfile.save();
       await newUser.save();
       res.status(200).json({ message: "success" });
     } else {

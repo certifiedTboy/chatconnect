@@ -25,6 +25,9 @@ const userSchema = new Schema({
     trim: true,
     required: true,
   },
+  about: {
+    type: String,
+  },
   isPrivate: {
     type: Boolean,
     default: false,

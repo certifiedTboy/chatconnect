@@ -55,22 +55,37 @@ exports.uploadProfilePicture = async (req, res) => {
   const x = "uploads/" + req.file.filename;
   try {
     const user = await User.findOne({ username: req.params.username });
-    const profilePicture = new Profile({
+    const profileId = user.profile._id;
+    const profile = await Profile.findByIdAndUpdate(profileId, {
       profilePicture: x,
       user: {
         username: user.username,
         id: user._id,
       },
     });
-    if (!profilePicture) {
+    if (!profile) {
       return res.json({ message: "Something went wrong" });
     }
-    profilePicture.save();
-    user.profile = profilePicture;
+    profile.save();
+    user.profile = profile;
     user.save();
     res.json({ msg: "success" });
   } catch (error) {
     res.status(404).json({ message: "something went wrong" });
+  }
+};
+
+exports.updateUser = async (req, res) => {
+  const { updateData } = req.body;
+  try {
+    const user = await User.findByIdAndUpdate(updateData, (error, newUser) => {
+      if (error) {
+        return res.status(400).json({ error: "something went wrong" });
+      }
+      return res.status(200).json({ message: "success" });
+    });
+  } catch (error) {
+    res.status(400).json({ error: "something went wrong" });
   }
 };
 

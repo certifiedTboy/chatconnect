@@ -50,21 +50,25 @@ export const getAllUsers = async () => {
   }
 };
 
-export const acceptRequest = async (requestSender) => {
+export const acceptRequest = async (requestSenderName) => {
+  const token = localStorage.getItem("accessJWT");
   const user = localStorage.getItem("user");
   const newUser = JSON.parse(user);
   const currentUser = newUser.username;
   const data = {
     currentUser,
-    requestSender,
+    requestSenderName,
   };
+
   const response = await fetch(
     `http://localhost:3001/user/requests/acceptrequest`,
     {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
+        Accept: "application/json",
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
     }
   );
@@ -80,13 +84,40 @@ export const acceptRequest = async (requestSender) => {
     console.log(error);
   }
 };
-// export const acceptRequest = async () => {
-//   const token = localStorage.getItem("accessJWT")
 
-//   try {
-//  const response = await fetch ("http://localhost:3001/user/request")
+export const cancelRequest = async (requestSenderName) => {
+  const token = localStorage.getItem("accessJWT");
+  const user = localStorage.getItem("user");
+  const newUser = JSON.parse(user);
+  const currentUser = newUser.username;
+  const data = {
+    currentUser,
+    requestSenderName,
+  };
 
-//   }catch(error){
+  console.log(data);
 
-//   }
-//  }
+  const response = await fetch(
+    `http://localhost:3001/user/requests/cancelrequest`,
+    {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  try {
+    const data = await response.json();
+    if (!response.ok) {
+      return data;
+    }
+
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};

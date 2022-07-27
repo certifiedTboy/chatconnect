@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "install-server": "npm install --prefix backend",
-    "install-client": "npm install --prefix AppUI",
-    "install": "npm run install-backend && npm run install-AppUI",
+    "install-client": "npm install --prefix client",
+    "install": "npm run install-backend && npm run install-client",
     "server": "npm run watch --prefix backend",
-    "client": "npm start --prefix AppUI",
+    "client": "npm start --prefix client",
     "watch": "npm run client && npm run server ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

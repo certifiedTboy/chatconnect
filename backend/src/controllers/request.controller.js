@@ -30,6 +30,7 @@ exports.acceptRequest = async (req, res) => {
   const messagingId = await crypto.randomBytes(20).toString("hex");
   try {
     const { currentUser, requestSenderName } = req.body;
+    console.log(currentUser, requestSenderName);
     const user = await User.findOne({ username: currentUser });
     const sender = await User.findOne({ username: requestSenderName });
     const userFriendListDetails = {
@@ -47,7 +48,7 @@ exports.acceptRequest = async (req, res) => {
       messagingId,
     };
 
-    const requestIndex = user.request.indexOf(sender._id);
+    const requestIndex = user.request.indexOf(sender.username);
     const sentRequestIndex = sender.sentRequest.indexOf(user.username);
     await sender.sentRequest.splice(sentRequestIndex, 1);
     await user.request.splice(requestIndex, 1);
@@ -66,9 +67,10 @@ exports.acceptRequest = async (req, res) => {
 
 exports.cancelRequest = async (req, res) => {
   try {
-    const { currentUser, requestSender } = req.body;
+    const { currentUser, requestSenderName } = req.body;
+    console.log(currentUser, requestSenderName);
     const user = await User.findOne({ username: currentUser });
-    const sender = await User.findOne({ username: requestSender });
+    const sender = await User.findOne({ username: requestSenderName });
 
     const requestIndex = user.request.indexOf(sender._id);
     const sentRequestIndex = sender.sentRequest.indexOf(user.username);

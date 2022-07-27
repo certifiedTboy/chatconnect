@@ -48,7 +48,6 @@ export const getAllProfiles = async () => {
     });
     const data = await response.json();
     if (!response.ok) {
-      console.log(data);
       return data.message;
     }
     return data;
@@ -63,7 +62,7 @@ export const uploadImage = async (fileData) => {
   const formData = new FormData();
   formData.append("image", image);
   try {
-    const response = await axios.post(
+    const response = await axios.put(
       `http://localhost:3001/user/profile-upload/${user}`,
       formData
     );

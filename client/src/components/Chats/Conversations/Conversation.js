@@ -34,10 +34,14 @@ const Conversation = ({ users }) => {
       {searchedUser.map((user) => {
         return (
           <div className="conversation">
-            <img
-              className="conversationImg"
-              src={`http://localhost:3001/${user.profilePicture}`}
-            />
+            {user.profilePicture ? (
+              <img
+                className="conversationImg"
+                src={`http://localhost:3001/${user.profilePicture}`}
+              />
+            ) : (
+              <img src="" />
+            )}
             <NavLink to={`/user/userprofile/${user.user.username}`}>
               {" "}
               <span className="conversationName">{user.user.username}</span>

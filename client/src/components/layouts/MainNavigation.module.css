@@ -51,8 +51,8 @@
   background-color: #f6f6f6;
   min-width: 230px;
   border: 1px solid #ddd;
-  z-index: 1;
-  margin-top: 45px;
+  /* z-index: 1; */
+  margin-top:5px;
 }
 
 /* Dropdown Content (Hidden by Default) */
@@ -91,6 +91,10 @@
 .searchName {
   font-weight: 600;
   display: inline;
+}
+
+.navsearch {
+  height: 50px;
 }
 
 

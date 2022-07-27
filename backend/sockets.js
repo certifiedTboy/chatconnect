@@ -55,7 +55,9 @@ const listen = (io) => {
     // Listen for chatMessage
     socket.on("chatMessage", async (msg) => {
       const user = getCurrentUser(socket.id);
-      const userImage = await getUserProfilePicture(user.username);
+      const image = await getUserProfilePicture(user.username);
+      let dummyImage = "/public/uploads/dummyimage";
+      const userImage = image ? image.profilePicture : dummyImage;
       io.to(user.room).emit(
         "message",
         userMessageFormat(msg.sender, msg.message, userImage)

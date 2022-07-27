@@ -34,7 +34,7 @@ const getUserProfilePicture = async (currentUserName) => {
   const response = await User.findOne({ username: currentUserName })
     .populate("profile")
     .exec();
-  return response.profile.profilePicture;
+  return response.profile;
 };
 
 const getAllUsersProfile = async (currentUserName) => {

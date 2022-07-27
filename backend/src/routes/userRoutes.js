@@ -17,13 +17,13 @@ const router = express.Router();
 
 router.use(express.static(path.join(__dirname, "..", "public", "uploads")));
 
-router.get("/users", getAllUsers);
+router.get("/users", requireSignin, getAllUsers);
 router.get("/user/:userId", requireSignin, getUser);
 router.get("/user/userprofile/:username", requireSignin, getUserProfile);
 router.get("/search/:searchdata", requireSignin, searchUsers);
 router.get("/users/profiles", getAllProfiles);
 
-router.post(
+router.put(
   "/user/profile-upload/:username",
   upload.single("image"),
   uploadProfilePicture

@@ -54,6 +54,8 @@ const Chat = () => {
     });
   }, [socket, topic]);
 
+  console.log(socketRoomUsers);
+
   //send user typing notification to socket server
   useEffect(() => {
     socket?.current.on("typing", (data) => {

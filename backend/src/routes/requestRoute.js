@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.post("/user/requests", requireSignin, sendRequest);
 router.post("/user/requests/acceptrequest", requireSignin, acceptRequest);
-router.post("/user/request/cancelrequest", requireSignin, cancelRequest);
-router.post("/user/blocked", blockUser);
+router.post("/user/requests/cancelrequest", requireSignin, cancelRequest);
+router.post("/user/blocked", requireSignin, blockUser);
 
 module.exports = router;

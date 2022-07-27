@@ -8,7 +8,6 @@ const UserProfilePage = () => {
   const { username } = params;
 
   const [userProfile, setUserProfile] = useState({});
-  const [userFriendsList, setUserFriendsList] = useState([]);
   const [userprofilePicture, setUserprofilePicture] = useState("");
   const [allProfiles, setAllProfiles] = useState([]);
   const [friends, setFriends] = useState([]);
@@ -18,30 +17,23 @@ const UserProfilePage = () => {
     setUserProfile(profile);
     setAllProfiles(profiles);
     setUserprofilePicture(profile.profile.profilePicture);
-    setUserFriendsList(profile.friendsList);
+    setFriends(profile.friendsList);
   };
 
   useEffect(() => {
     getUserProfileDetails();
   }, [username]);
 
-  // useEffect(() => {
-  //   const friendsList = userFriendsList.filter((frndList) => {
-  //     allProfiles.some(
-  //       (profiles) => frndList.friendName === profiles.user.username
-  //     );
-  //   });
+  const listOfFriends = allProfiles.filter((prof) =>
+    friends.some((frnd) => prof.user.username === frnd.username)
+  );
 
-  //   setFriends(friendsList);
-  // }, [username]);
-
-  // console.log(friends);
   return (
     <>
       <Profile
         currentUserProfile={userProfile}
         userprofilePicture={userprofilePicture}
-        userFriendsList={userFriendsList}
+        userFriendsList={listOfFriends}
       />
     </>
   );
