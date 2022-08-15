@@ -1,9 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ProfileModal from "../layouts/ProfileModal";
-import { sendRequest, getSentRequest } from "../../lib/requestApi";
+import {
+  sendRequest,
+  getSentRequest,
+  removeFriend,
+} from "../../lib/requestApi";
+import { getUserProfile } from "../../lib/userApi";
 import { useDispatch, useSelector } from "react-redux";
 import { showAboutPage, loadingPage } from "./profileActions";
-import { getUserProfile } from "../../lib/userApi";
+import Button from "react-bootstrap/Button";
 import { useParams } from "react-router-dom";
 
 const ProfileHeader = ({
@@ -13,8 +18,11 @@ const ProfileHeader = ({
 }) => {
   const dispatch = useDispatch();
   const params = useParams();
+  const username = params.username;
   const { user } = useSelector((state) => state.login);
   const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [friendInclude, setFriendInclude] = useState(false);
 
   const onShowModal = () => {
     setShowModal(true);
@@ -24,26 +32,74 @@ const ProfileHeader = ({
     setShowModal(false);
   };
 
-  const sendFriendRequest = () => {
-    sendRequest(currentUserProfile.username);
+  const removeUserAsFriend = async () => {
+    setIsLoading(true);
+    const response = await removeFriend(currentUserProfile.username);
+    if (response.pending) {
+      setIsLoading(true);
+    }
+
+    setIsLoading(false);
+  };
+
+  const sendFriendRequest = async () => {
+    setIsLoading(true);
+    const response = await sendRequest(currentUserProfile.username);
+    if (response.pending) {
+      setIsLoading(true);
+    }
+    setIsLoading(false);
   };
 
   let friendsActionButton = (
-    <button onClick={sendFriendRequest}>Add Friend</button>
+    <Button
+      variant="success"
+      disabled={isLoading}
+      onClick={!isLoading ? sendFriendRequest : null}
+    >
+      {isLoading ? "Loading…" : "Add Friend"}
+    </Button>
   );
-  if (user === params.username) {
-    friendsActionButton = <div></div>;
+
+  const checkUserFriendsList = async () => {
+    userFriendsList.map((friend) => {
+      if (user.includes(friend.user.username)) {
+        setFriendInclude(true);
+      } else {
+        setFriendInclude(false);
+      }
+    });
+  };
+
+  if (friendInclude === true) {
+    friendsActionButton = (
+      <Button
+        variant="danger"
+        disabled={isLoading}
+        onClick={!isLoading ? removeUserAsFriend : null}
+      >
+        {isLoading ? "Loading…" : "Remove Friend"}
+      </Button>
+    );
+  } else {
+    friendsActionButton = (
+      <Button
+        variant="success"
+        disabled={isLoading}
+        onClick={!isLoading ? sendFriendRequest : null}
+      >
+        {isLoading ? "Loading…" : "Add Friend"}
+      </Button>
+    );
   }
 
-  userFriendsList.map((frnd) => {
-    if (user.includes(frnd.user.username)) {
-      return (friendsActionButton = (
-        <button className="bnt btn-danger" style={{ color: "red" }}>
-          Remove Friend
-        </button>
-      ));
-    }
-  });
+  useEffect(() => {
+    checkUserFriendsList();
+  }, [removeUserAsFriend, sendFriendRequest, username]);
+
+  if (user === username) {
+    friendsActionButton = <div></div>;
+  }
 
   const aboutPage = async () => {
     dispatch(loadingPage());
@@ -118,9 +174,7 @@ const ProfileHeader = ({
               <li className="px-3 font-semibold text-gray-600">
                 <a href="#">Photos</a>
               </li>
-              {/* <li className="px-3 font-semibold text-gray-600">
-              <a href="#">Story Archive</a>
-            </li> */}
+
               <li className="px-3 font-semibold text-gray-600">
                 {friendsActionButton}
               </li>

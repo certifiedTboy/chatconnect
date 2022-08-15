@@ -1,12 +1,12 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { searchUsers } from "../../lib/userApi";
-import { LinkContainer } from "react-router-bootstrap";
+import { searchUsers, getUserProfile } from "../../lib/userApi";
+import Button from "react-bootstrap/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { onLogout } from "../Auth/loginSlice";
 import { registerationFail } from "../Auth/userRegisterationSlice";
 import { acceptRequest, cancelRequest } from "../../lib/requestApi";
-import { getUserProfile } from "../../lib/userApi";
+import { logoutUser } from "../../lib/authApi";
 import styles from "./MainNavigation.module.css";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
@@ -30,10 +30,16 @@ const MainNavigation = () => {
   const [profilePicture, setProfilePicture] = useState("");
   const dispatch = useDispatch();
 
+  const onLogoutUser = async () => {
+    const response = await logoutUser();
+    console.log(response);
+  };
+
   // logout function
-  const logOut = () => {
+  const logOut = async () => {
     localStorage.removeItem("user");
     localStorage.removeItem("accessJWT");
+    onLogoutUser();
     dispatch(onLogout());
     dispatch(registerationFail());
   };
@@ -219,44 +225,37 @@ const MainNavigation = () => {
                           <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                             <Menu.Item>
                               {({ active }) => (
-                                <p className="bg-gray-100 block px-4 py-2 text-sm text-gray-700">
-                                  {" "}
-                                  Notifications{" "}
-                                </p>
+                                <p className="bg-gray-100 block px-4 py-2 text-sm text-gray-700"></p>
                               )}
                             </Menu.Item>
 
                             <Menu.Item>
                               {({ active }) => (
-                                <p className="bg-gray-100 block px-4 py-2 text-sm text-gray-700">
-                                  {" "}
-                                  Friends Request{" "}
-                                  <div>
-                                    {friendRequests.map((request) => {
-                                      return (
-                                        <div>
-                                          <p>{request.username}</p>
-                                          <button
-                                            key={request._id}
-                                            value={request.username}
-                                            className="btn btn-success"
-                                            onClick={onAcceptRequest}
-                                          >
-                                            Accept
-                                          </button>
+                                <div>
+                                  {friendRequests.map((request) => {
+                                    return (
+                                      <div>
+                                        <p>{request.username}</p>
+                                        <Button
+                                          variant="success"
+                                          key={request._id}
+                                          value={request.username}
+                                          onClick={onAcceptRequest}
+                                        >
+                                          Accept
+                                        </Button>
 
-                                          <button
-                                            className="btn btn-danger"
-                                            value={request.username}
-                                            onClick={onRejectRequest}
-                                          >
-                                            Decline
-                                          </button>
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                </p>
+                                        <Button
+                                          variant="danger"
+                                          value={request.username}
+                                          onClick={onRejectRequest}
+                                        >
+                                          Decline
+                                        </Button>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
                               )}
                             </Menu.Item>
                           </Menu.Items>

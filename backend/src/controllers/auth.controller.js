@@ -1,15 +1,28 @@
 const jwt = require("jsonwebtoken");
-const expressJwt = require("express-jwt");
-require("dotenv").config();
 const User = require("../models/user");
 const Profile = require("../models/profile");
+const bcrypt = require("bcrypt");
+require("dotenv").config();
+const { SECRET } = process.env;
 
 // user signup configuration
 exports.signup = async (req, res) => {
   try {
     const user = await User.findOne({ username: req.body.username });
     if (!user) {
-      const newUser = await new User(req.body);
+      const { username, name, email, phoneNumber, password } = req.body;
+
+      // hash provided password with bcrypt module
+      const salt = await bcrypt.genSalt();
+      const hashedPassword = await bcrypt.hash(password, salt);
+
+      const newUser = await new User({
+        username,
+        name,
+        email,
+        phoneNumber,
+        password: hashedPassword,
+      });
 
       const userProfile = await new Profile({
         profilePicture: "uploads/dummyimage.jpg",
@@ -29,37 +42,61 @@ exports.signup = async (req, res) => {
         .json({ message: "User with the username already exist" });
     }
   } catch (error) {
-    return res.status(404).json({ message: "Something went wrong" });
+    return res.status(500).json({ message: "Something went wrong" });
   }
 };
 
-// User signin configuration
+// User signin controller function
 exports.signin = async (req, res) => {
+  const { username, password } = req.body;
+  console.log(username, password);
   try {
-    const user = await User.findOne({ username: req.body.username });
+    let user = await User.findOne({ username });
+    console.log(user);
     if (!user) {
-      res
-        .status(401)
-        .json({ error: "User with the provided username does not exist" });
-    } else if (!user.authenticate(req.body.password)) {
-      res.status(401).json({ error: "Incorrect username or password" });
-    } else {
-      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
-      res.cookie("t", token, { expire: new Date() + 9999 });
-      res.json({ token, user });
+      return res
+        .status(400)
+        .json({ statuseCode: 400, error: "Incorrect username or password" });
     }
+    const isMatch = await bcrypt.compare(password, user.password);
+    console.log(isMatch);
+    if (!isMatch) {
+      return res
+        .status(400)
+        .json({ statusCode: 400, error: "Incorrect username or password" });
+    }
+
+    const payload = {
+      user: {
+        id: user.id,
+      },
+    };
+    jwt.sign(
+      payload,
+      SECRET,
+      {
+        expiresIn: 36000,
+      },
+      (err, token) => {
+        if (err) {
+          throw err;
+        }
+
+        res.cookie("auth-token", token).json({
+          statusCode: 200,
+          message: "success",
+          user,
+          token,
+        });
+      }
+    );
   } catch (error) {
-    res.status(404).json({ error: "Something went wrong, try again later" });
+    console.log(error);
+    res.status(500).send("Server Error");
   }
 };
 
 exports.signout = (req, res) => {
-  res.clearCookie("t");
+  res.clearCookie("auth-token");
   return res.json({ message: "Signout Successfully" });
 };
-
-exports.requireSignin = expressJwt({
-  secret: process.env.JWT_SECRET,
-  algorithms: ["HS256"],
-  userProperty: "auth",
-});

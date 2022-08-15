@@ -6,7 +6,7 @@ export const fetchRooms = async () => {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        "auth-token": `${token}`,
       },
     });
 
@@ -28,7 +28,7 @@ export const fetchRoomByTopic = async (topic) => {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        // Authorization: `Bearer ${token}`,
       },
     });
 

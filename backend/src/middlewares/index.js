@@ -10,9 +10,8 @@ exports.dataFieldLength = (req, res, next) => {
     req.body.password.trim().length <= 0
   ) {
     return res.json({
-      message:
-        "Input fields cannot be empty" +
-        "Ensure you provide all input fields correctly",
+      message: `Input fields cannot be empty 
+        Ensure you provide all input fields correctly`,
     });
   }
   next();
@@ -24,7 +23,7 @@ exports.passwordValidity = (req, res, mext) => {
     req.body.password.trim().length <= 7
   ) {
     return res.json({
-      message: "Invalid password" + "Password must not be less than 8",
+      message: `Invalid password Password must not be less than 8`,
     });
   }
 };

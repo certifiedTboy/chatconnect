@@ -5,19 +5,20 @@ import { useDispatch, useSelector } from "react-redux";
 import { Alert, Form } from "react-bootstrap";
 import { newUserLogin } from "./LoginActions";
 import { loginFail } from "./loginSlice";
+import { getUserProfile } from "../../lib/userApi";
 
 const LoginForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { isLoading, isAuth, error, user } = useSelector(
-    (state) => state.login
-  );
-  const { status } = useSelector((state) => state.registeration);
+  const { error, user } = useSelector((state) => state.login);
 
-  const checkIsAutenticated = () => {
-    if (user) {
-      navigate("/rooms");
+  const checkIsAutenticated = async () => {
+    const userProfile = await getUserProfile(user);
+    if (userProfile.profile.profilePicture === "uploads/dummyimage.jpg") {
+      return navigate("/profile-picture");
+    } else {
+      return navigate("/rooms");
     }
   };
   useEffect(() => {

@@ -27,7 +27,8 @@ exports.getAllRooms = async (req, res) => {
   }
 };
 
-exports.getRoomById = async (req, res) => {
+exports.getSingleRoom = async (req, res) => {
+  console.log(req.user.id);
   try {
     const room = await Rooms.findOne({ topic: req.params.topic })
       .populate("Chat")

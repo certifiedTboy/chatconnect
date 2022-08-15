@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   profileLoading: false,
   friendsRequest: false,
-  aboutPage: false,
+  aboutPage: true,
   allFriends: false,
 };
 

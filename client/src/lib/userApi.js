@@ -1,13 +1,25 @@
-import React, { useState } from "react";
 import axios from "axios";
 
-export const getCurrentUser = () => {
-  const user = localStorage.getItem("user");
-  const currentUser = JSON.parse(user);
-  if (!currentUser) {
-    return;
+export const getCurrentUser = async () => {
+  const token = localStorage.getItem("accessJWT");
+  try {
+    const response = await fetch("http://localhost:3001/users/currentuser", {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "apllication/json",
+        "auth-token": `${token}`,
+      },
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      return data;
+    }
+
+    return data;
+  } catch (error) {
+    return error;
   }
-  return currentUser.username;
 };
 
 export const getUserProfile = async (username) => {
@@ -20,13 +32,12 @@ export const getUserProfile = async (username) => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          "auth-token": `${token}`,
         },
       }
     );
     const data = await response.json();
     if (!response.ok) {
-      console.log(data);
       return data.message;
     }
     return data;
@@ -57,14 +68,21 @@ export const getAllProfiles = async () => {
 };
 
 export const uploadImage = async (fileData) => {
+  const token = localStorage.getItem("accessJWT");
   let { image } = fileData;
   let { user } = fileData;
   const formData = new FormData();
   formData.append("image", image);
   try {
     const response = await axios.put(
-      `http://localhost:3001/user/profile-upload/${user}`,
-      formData
+      `http://localhost:3001/user/profile-upload`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": `${token}`,
+        },
+      }
     );
 
     if (!response.ok) {

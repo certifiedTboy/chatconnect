@@ -5,7 +5,7 @@ import RegForm from "./components/Auth/RegForm";
 import LoginForm from "./components/Auth/Login";
 import Layout from "./components/layouts/Layout";
 import Rooms from "./pages/Rooms";
-import Chat from "./components/Chats/Chat";
+import ChatPage from "./pages/ChatPage";
 import { useSelector } from "react-redux";
 import ProfileUpload from "./pages/ProfileUpload";
 import UserProfilePage from "./pages/UserProfilePage";
@@ -38,7 +38,7 @@ function App() {
           path="/rooms/:topic"
           element={
             <ProtectedRoutes user={user}>
-              <Chat />
+              <ChatPage />
             </ProtectedRoutes>
           }
         />

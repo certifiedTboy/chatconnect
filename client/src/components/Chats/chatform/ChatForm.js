@@ -2,9 +2,9 @@ import React, { useState, useRef } from "react";
 import { Form } from "react-bootstrap";
 import Picker from "emoji-picker-react";
 import useSound from "use-sound";
-import messageSent from "../../sounds/sentmessage.mp3";
-// import messengerEffect from "../../sounds/messenger.mp3";
-import click from "../../sounds/click.mp3";
+import messageSent from "../../../sounds/sentmessage.mp3";
+// import messengerEffect from "../../../sounds/messenger.mp3";
+import click from "../../../sounds/click.mp3";
 
 import "./ChatForm.css";
 

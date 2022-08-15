@@ -93,8 +93,8 @@ exports.removeFriend = async (req, res) => {
     const user = await User.findOne({ username: userUsername });
     const friend = await User.findOne({ username: friendUsername });
 
-    const userFriendIndex = user.friendsList.indexOf(friend._id);
-    const friendFriendIndex = friend.friendsList.indexOf(user._id);
+    const userFriendIndex = user.friendsList.indexOf(friend.username);
+    const friendFriendIndex = friend.friendsList.indexOf(user.username);
     await user.friendsList.splice(userFriendIndex, 1);
     await friend.friendsList.splice(friendFriendIndex, 1);
 

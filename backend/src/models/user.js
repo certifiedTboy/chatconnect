@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
-const { v4: uuidv4 } = require("uuid");
-const crypto = require("crypto");
 
+// const crypto = require("crypto");
+
+// const bcrypt = require("bcrypt");
 const Schema = mongoose.Schema;
 const userSchema = new Schema({
   username: {
@@ -32,12 +33,12 @@ const userSchema = new Schema({
     type: Boolean,
     default: false,
   },
-  hashed_password: {
+  password: {
     type: String,
     require: true,
     trim: true,
   },
-  salt: String,
+
   createdAt: {
     type: Date,
     default: Date.now,
@@ -87,42 +88,7 @@ const userSchema = new Schema({
       friendName: { type: String },
     },
   ],
-  // totalRequest: { type: Number, default: 0 },
 });
-
-// virtual field
-userSchema
-  .virtual("password")
-  .set(function (password) {
-    // create temporary variable called _password
-    this._password = password;
-    // generate a timestamp
-    this.salt = uuidv4();
-    // encryptPassword()
-    this.hashed_password = this.encryptPassword(password);
-  })
-  .get(function () {
-    return this._password;
-  });
-
-// methods
-userSchema.methods = {
-  authenticate: function (plainText) {
-    return this.encryptPassword(plainText) === this.hashed_password;
-  },
-  //encrypt password function
-  encryptPassword: function (password) {
-    if (!password) return "";
-    try {
-      return crypto
-        .createHmac("sha1", this.salt)
-        .update(password)
-        .digest("hex");
-    } catch (err) {
-      return "";
-    }
-  },
-};
 
 const User = mongoose.model("user", userSchema);
 

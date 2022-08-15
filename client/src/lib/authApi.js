@@ -41,3 +41,18 @@ export const userRegisteration = async (userData) => {
 };
 
 //User Logout Api
+
+export const logoutUser = async () => {
+  try {
+    const response = await fetch("http://localhost:3001/signout", {
+      method: "GET",
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      return data;
+    }
+    return data;
+  } catch (error) {
+    return error;
+  }
+};

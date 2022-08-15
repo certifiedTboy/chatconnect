@@ -3,16 +3,16 @@ import { Col, Row } from "react-bootstrap";
 import ScrollToBottom from "react-scroll-to-bottom";
 import { useSelector } from "react-redux";
 import useSound from "use-sound";
-import ebuddy from "../../sounds/ebuddy.mp3";
-import { fetchRoomByTopic, fetchRooms } from "../../lib/roomApi";
-import ChatForm from "./ChatForm.js";
+import ebuddy from "../sounds/ebuddy.mp3";
+import { fetchRoomByTopic, fetchRooms } from "../lib/roomApi";
+import ChatForm from "../components/Chats/chatform/ChatForm";
 import { useParams, useNavigate } from "react-router-dom";
-import Conversation from "./Conversations/Conversation";
-import Message from "./message/Message";
-import ChatOnline from "./chatOnline/ChatOnline";
+import Conversation from "../components/Chats/Conversations/Conversation";
+import Message from "../components/Chats/message/Message";
+import ChatOnline from "../components/Chats/chatOnline/ChatOnline";
 import { io } from "socket.io-client";
+import messengerEffect from "../sounds/messenger.mp3";
 import "./Chat.css";
-import messengerEffect from "../../sounds/messenger.mp3";
 
 const Chat = () => {
   const socket = useRef(io("http://localhost:3001"));
@@ -54,8 +54,6 @@ const Chat = () => {
     });
   }, [socket, topic]);
 
-  console.log(socketRoomUsers);
-
   //send user typing notification to socket server
   useEffect(() => {
     socket?.current.on("typing", (data) => {
@@ -82,7 +80,6 @@ const Chat = () => {
 
   const typingHandler = async (data) => {
     if (data.key != "Enter") {
-      // play2();
       socket.current.emit("typing", {
         user: user,
         typing: true,
@@ -107,9 +104,7 @@ const Chat = () => {
         <Col lg={3}>
           <h3>{currentRoom}</h3>
           <div className="chatMenuWrapper">
-            {/* { socketRoomUsers.map((users) => ( */}
             <Conversation users={socketRoomUsers || []} />
-            {/* ))} */}
           </div>
         </Col>
         <Col lg={6}>

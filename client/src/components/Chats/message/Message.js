@@ -1,6 +1,5 @@
 import "./Message.css";
 import { format } from "timeago.js";
-// import Image from "../../../assets/back.jpg";
 import { NavLink } from "react-router-dom";
 import { Fragment } from "react";
 

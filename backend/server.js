@@ -33,13 +33,6 @@ const io = new Server(server, {
   },
 });
 
-//jwt error handling
-app.use((err, req, res, next) => {
-  if (err.name === "UnauthorizedError") {
-    res.status(401).json({ message: "invalid token" });
-  }
-});
-
 // router middleware configuration
 app.use("/", userRoute);
 app.use("/", roomRoutes);

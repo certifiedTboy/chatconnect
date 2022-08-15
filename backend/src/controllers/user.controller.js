@@ -1,6 +1,21 @@
 const User = require("../models/user");
 const Profile = require("../models/profile");
 
+exports.getCurrentUser = async (req, res) => {
+  const userId = req.user.id;
+  console.log(userId);
+  try {
+    const currentUser = await User.findById(userId);
+    if (!currentUser) {
+      return res.status(404).json({ error: "user not found" });
+    }
+    console.log(currentUser.username);
+    return res.status(200).json(currentUser.username);
+  } catch (error) {
+    res.status(400).json({ error: "something went wrong" });
+  }
+};
+
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.find({});
@@ -12,30 +27,15 @@ exports.getAllUsers = async (req, res) => {
 };
 
 exports.getUserProfile = async (req, res) => {
+  const { username } = req.params;
   try {
-    const user = await User.findOne({ username: req.params.username })
-      .populate("profile")
-      .exec();
-
+    const user = await User.findOne({ username }).populate("profile").exec();
     if (!user) {
       return res.status(404).json({ message: "Something went wrong" });
     }
     res.status(200).json(user);
   } catch (error) {
-    console.log(error);
-  }
-};
-
-exports.userById = async (req, res, next, id) => {
-  try {
-    const user = await User.findById(id).exec();
-    if (!user) {
-      return res.status(400).json({ message: "No user found" });
-    }
-    req.profile = user;
-    next();
-  } catch (error) {
-    res.status(400).json({ message: "Something went wrong" });
+    res.status(500).json({ error: "something went wrong" });
   }
 };
 
@@ -47,14 +47,15 @@ exports.getAllProfiles = async (req, res) => {
     }
     return res.status(200).json(profiles);
   } catch (error) {
-    res.status(400).json({ error: "something went wrong" });
+    res.status(500).json({ error: "something went wrong" });
   }
 };
 
 exports.uploadProfilePicture = async (req, res) => {
+  const userId = req.user.id;
   const x = "uploads/" + req.file.filename;
   try {
-    const user = await User.findOne({ username: req.params.username });
+    const user = await User.findById(userId);
     const profileId = user.profile._id;
     const profile = await Profile.findByIdAndUpdate(profileId, {
       profilePicture: x,
@@ -71,19 +72,24 @@ exports.uploadProfilePicture = async (req, res) => {
     user.save();
     res.json({ msg: "success" });
   } catch (error) {
-    res.status(404).json({ message: "something went wrong" });
+    res.status(500).json({ message: "something went wrong" });
   }
 };
 
 exports.updateUser = async (req, res) => {
+  const userId = req.user.id;
   const { updateData } = req.body;
   try {
-    const user = await User.findByIdAndUpdate(updateData, (error, newUser) => {
-      if (error) {
-        return res.status(400).json({ error: "something went wrong" });
+    const user = await User.findByIdAndUpdate(
+      userId,
+      updateData,
+      (error, newUser) => {
+        if (error) {
+          return res.status(400).json({ error: "something went wrong" });
+        }
+        return res.status(200).json({ message: "success" });
       }
-      return res.status(200).json({ message: "success" });
-    });
+    );
   } catch (error) {
     res.status(400).json({ error: "something went wrong" });
   }
@@ -110,20 +116,6 @@ exports.searchUsers = async (req, res) => {
     return res.status(200).json(users);
   } catch (error) {
     res.json({ error: "Something went wrong" });
-  }
-};
-
-exports.hasAuthorization = async (req, res, next) => {
-  try {
-    const authorized = req.profile && req.auth && req.profile._id === req.auth;
-    if (!authorized) {
-      return res
-        .status(403)
-        .json({ message: "User is not authorized to perform this action" });
-    }
-    next();
-  } catch (error) {
-    res.status(404).json({ message: "something went wrong" });
   }
 };
 
