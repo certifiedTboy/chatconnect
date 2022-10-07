@@ -49,17 +49,15 @@ exports.signup = async (req, res) => {
 // User signin controller function
 exports.signin = async (req, res) => {
   const { username, password } = req.body;
-  console.log(username, password);
   try {
     let user = await User.findOne({ username });
-    console.log(user);
+
     if (!user) {
       return res
         .status(400)
         .json({ statuseCode: 400, error: "Incorrect username or password" });
     }
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log(isMatch);
     if (!isMatch) {
       return res
         .status(400)
@@ -81,17 +79,18 @@ exports.signin = async (req, res) => {
         if (err) {
           throw err;
         }
-
+        const userData = {
+          C_U: user.username,
+        };
         res.cookie("auth-token", token).json({
           statusCode: 200,
           message: "success",
-          user,
+          userData,
           token,
         });
       }
     );
   } catch (error) {
-    console.log(error);
     res.status(500).send("Server Error");
   }
 };

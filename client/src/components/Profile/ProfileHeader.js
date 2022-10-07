@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import ProfileModal from "../layouts/ProfileModal";
 import {
   sendRequest,
-  getSentRequest,
+  getUserSentRequest,
   removeFriend,
+  getAllUserFriends,
+  cancelRequest,
 } from "../../lib/requestApi";
 import { getUserProfile } from "../../lib/userApi";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,6 +25,9 @@ const ProfileHeader = ({
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [friendInclude, setFriendInclude] = useState(false);
+  const [friendIsPending, setFriendIsPending] = useState(false);
+  const [cancelRequest, setCancelRequest] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
 
   const onShowModal = () => {
     setShowModal(true);
@@ -51,19 +56,10 @@ const ProfileHeader = ({
     setIsLoading(false);
   };
 
-  let friendsActionButton = (
-    <Button
-      variant="success"
-      disabled={isLoading}
-      onClick={!isLoading ? sendFriendRequest : null}
-    >
-      {isLoading ? "Loading…" : "Add Friend"}
-    </Button>
-  );
-
-  const checkUserFriendsList = async () => {
-    userFriendsList.map((friend) => {
-      if (user.includes(friend.user.username)) {
+  const onGetUserFriends = async () => {
+    const friends = await getAllUserFriends(username);
+    friends.map((friend) => {
+      if (user === friend.username) {
         setFriendInclude(true);
       } else {
         setFriendInclude(false);
@@ -71,35 +67,31 @@ const ProfileHeader = ({
     });
   };
 
-  if (friendInclude === true) {
-    friendsActionButton = (
-      <Button
-        variant="danger"
-        disabled={isLoading}
-        onClick={!isLoading ? removeUserAsFriend : null}
-      >
-        {isLoading ? "Loading…" : "Remove Friend"}
-      </Button>
-    );
-  } else {
-    friendsActionButton = (
-      <Button
-        variant="success"
-        disabled={isLoading}
-        onClick={!isLoading ? sendFriendRequest : null}
-      >
-        {isLoading ? "Loading…" : "Add Friend"}
-      </Button>
-    );
-  }
+  const onGetSentRequest = async () => {
+    const sentRequest = await getUserSentRequest(user);
+
+    if (sentRequest.userRequest.length >= 1) {
+      const userRequest = sentRequest.userRequest.find(
+        (req) => req.username === username
+      );
+      if (userRequest.username === username) {
+        setFriendIsPending(true);
+      }
+    }
+  };
+
+  const onCancelRequest = async () => {
+    const response = await cancelRequest(username);
+    if (response.ok) {
+      setFriendIsPending(false);
+    }
+    setFriendIsPending(true);
+  };
 
   useEffect(() => {
-    checkUserFriendsList();
-  }, [removeUserAsFriend, sendFriendRequest, username]);
-
-  if (user === username) {
-    friendsActionButton = <div></div>;
-  }
+    onGetUserFriends();
+    onGetSentRequest();
+  }, [username, onGetUserFriends, sendFriendRequest, removeUserAsFriend]);
 
   const aboutPage = async () => {
     dispatch(loadingPage());
@@ -113,6 +105,46 @@ const ProfileHeader = ({
       }
     } catch (error) {}
   };
+
+  const handleMouseOver = async () => {
+    setIsHovering(true);
+  };
+
+  const handleMouseOut = async () => {
+    setIsHovering(false);
+  };
+
+  let addFriendActionButton = (
+    <Button
+      variant="success"
+      disabled={isLoading}
+      onClick={!isLoading ? sendFriendRequest : null}
+    >
+      {isLoading ? "Loading…" : "Add Friend"}
+    </Button>
+  );
+
+  let removeFriendActionButton = (
+    <Button
+      variant="danger"
+      disabled={isLoading}
+      onClick={!isLoading ? removeUserAsFriend : null}
+    >
+      {isLoading ? "Loading…" : "Remove Friend"}
+    </Button>
+  );
+
+  let pendingFriendActionButton = (
+    <Button
+      variant={isHovering ? "warning" : "light"}
+      // disabled={isHovering ? false : true}
+      onMouseOver={handleMouseOver}
+      onMouseOut={handleMouseOut}
+      onClick={onCancelRequest}
+    >
+      {isHovering ? "Cancel Request" : "Request Pending..."}
+    </Button>
+  );
 
   return (
     <>
@@ -176,7 +208,20 @@ const ProfileHeader = ({
               </li>
 
               <li className="px-3 font-semibold text-gray-600">
-                {friendsActionButton}
+                {user === username && ""}
+                {user !== username &&
+                  friendIsPending === false &&
+                  friendInclude === false &&
+                  addFriendActionButton}
+                {user !== username &&
+                  friendIsPending === true &&
+                  friendInclude === false &&
+                  pendingFriendActionButton}
+
+                {user !== username &&
+                  friendInclude === true &&
+                  friendIsPending === false &&
+                  removeFriendActionButton}
               </li>
             </ul>
             <ul className="flex mb:pl-14">

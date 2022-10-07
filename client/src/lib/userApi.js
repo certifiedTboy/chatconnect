@@ -1,13 +1,22 @@
 import axios from "axios";
 
-export const getCurrentUser = async () => {
+export const getCurrentUser = () => {
+  const user = localStorage.getItem("user");
+  const currentUser = JSON.parse(user);
+  if (!currentUser) {
+    return;
+  }
+  return currentUser.C_U;
+};
+
+export const getCurrentUserFromServer = async () => {
   const token = localStorage.getItem("accessJWT");
   try {
     const response = await fetch("http://localhost:3001/users/currentuser", {
       method: "GET",
       headers: {
         Accept: "application/json",
-        "Content-Type": "apllication/json",
+        "Content-Type": "application/json",
         "auth-token": `${token}`,
       },
     });
@@ -15,7 +24,8 @@ export const getCurrentUser = async () => {
     if (!response.ok) {
       return data;
     }
-
+    console.log(typeof data);
+    return data.username;
     return data;
   } catch (error) {
     return error;
@@ -38,6 +48,7 @@ export const getUserProfile = async (username) => {
     );
     const data = await response.json();
     if (!response.ok) {
+      console.log(data);
       return data.message;
     }
     return data;
@@ -104,13 +115,14 @@ export const searchUsers = async (searchValue) => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          "auth-token": `${token}`,
         },
       }
     );
     if (!response.ok) {
       return response.error;
     }
+
     const data = await response.json();
     console.log(data);
     return data;

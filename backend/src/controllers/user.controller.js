@@ -9,8 +9,8 @@ exports.getCurrentUser = async (req, res) => {
     if (!currentUser) {
       return res.status(404).json({ error: "user not found" });
     }
-    console.log(currentUser.username);
-    return res.status(200).json(currentUser.username);
+
+    return res.status(200).json(currentUser);
   } catch (error) {
     res.status(400).json({ error: "something went wrong" });
   }

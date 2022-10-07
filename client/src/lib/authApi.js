@@ -12,10 +12,12 @@ export const userLogin = async (data) => {
     if (!response.ok) {
       return data;
     }
+
     localStorage.setItem("accessJWT", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
+    localStorage.setItem("user", JSON.stringify(data.userData));
     return data;
   } catch (error) {
+    console.log(error);
     return error;
   }
 };

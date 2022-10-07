@@ -2,7 +2,9 @@ export const sendRequest = async (receiverUsername) => {
   const token = localStorage.getItem("accessJWT");
   const user = localStorage.getItem("user");
   const newUser = JSON.parse(user);
-  const senderUsername = newUser.username;
+
+  const senderUsername = newUser.C_U;
+  console.log(senderUsername);
   const data = {
     senderUsername,
     receiverUsername,
@@ -13,7 +15,7 @@ export const sendRequest = async (receiverUsername) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      "auth-token": `${token}`,
     },
   });
 
@@ -37,7 +39,7 @@ export const getAllUsers = async () => {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        "auth-token": `${token}`,
       },
     });
     if (!response.ok) {
@@ -54,7 +56,7 @@ export const acceptRequest = async (requestSenderName) => {
   const token = localStorage.getItem("accessJWT");
   const user = localStorage.getItem("user");
   const newUser = JSON.parse(user);
-  const currentUser = newUser.username;
+  const currentUser = newUser.C_U;
   const data = {
     currentUser,
     requestSenderName,
@@ -68,7 +70,7 @@ export const acceptRequest = async (requestSenderName) => {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        "auth-token": `${token}`,
       },
     }
   );
@@ -89,7 +91,7 @@ export const cancelRequest = async (requestSenderName) => {
   const token = localStorage.getItem("accessJWT");
   const user = localStorage.getItem("user");
   const newUser = JSON.parse(user);
-  const currentUser = newUser.username;
+  const currentUser = newUser.C_U;
   const data = {
     currentUser,
     requestSenderName,
@@ -105,7 +107,7 @@ export const cancelRequest = async (requestSenderName) => {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        "auth-token": `${token}`,
       },
     }
   );
@@ -126,13 +128,11 @@ export const removeFriend = async (friendUsername) => {
   const token = localStorage.getItem("accessJWT");
   const user = localStorage.getItem("user");
   const newUser = JSON.parse(user);
-  const userUsername = newUser.username;
+  const userUsername = newUser.C_U;
   const data = {
     userUsername,
     friendUsername,
   };
-
-  console.log(data);
 
   const response = await fetch(
     `http://localhost:3001/user/requests/removefriend`,
@@ -142,7 +142,7 @@ export const removeFriend = async (friendUsername) => {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        "auth-token": `${token}`,
       },
     }
   );
@@ -153,6 +153,58 @@ export const removeFriend = async (friendUsername) => {
       return data;
     }
 
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getAllUserFriends = async (username) => {
+  const token = localStorage.getItem("accessJWT");
+
+  const response = await fetch(
+    `http://localhost:3001/user/request/${username}/allFriends`,
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "auth-token": `${token}`,
+      },
+    }
+  );
+
+  try {
+    const data = await response.json();
+    if (!response.ok) {
+      return data;
+    }
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getUserSentRequest = async (username) => {
+  const token = localStorage.getItem("accessJWT");
+
+  const response = await fetch(
+    `http://localhost:3001/user/request/${username}/sentrequests`,
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "auth-token": `${token}`,
+      },
+    }
+  );
+
+  try {
+    const data = await response.json();
+    if (!response.ok) {
+      return data;
+    }
     return data;
   } catch (error) {
     console.log(error);

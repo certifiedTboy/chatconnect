@@ -1,26 +1,64 @@
 const crypto = require("crypto");
 const User = require("../models/user");
 
+// exports.sendRequest = async (req, res) => {
+//   try {
+//     const { senderUsername, receiverUsername } = req.body;
+//     const sender = await User.findOne({ username: senderUsername });
+//     const receiver = await User.findOne({ username: receiverUsername });
+//     const receiverName = {
+//       username: receiver.username,
+//     };
+//     sender.sentRequest.push(receiverName);
+//     const senderDetails = {
+//       userId: sender._id,
+//       username: sender.username,
+//     };
+//     receiver.request.push(senderDetails);
+//     sender.save();
+//     receiver.save();
+
+//     console.log(sender);
+//     console.log(receiver);
+//     res.status(200).json({ message: "success" });
+//   } catch (error) {
+//     res.status(400).json({ error: "something went wrong" });
+//   }
+// };
+
 exports.sendRequest = async (req, res) => {
+  const { senderUsername, receiverUsername } = req.body;
   try {
-    const { senderUsername, receiverUsername } = req.body;
     const sender = await User.findOne({ username: senderUsername });
     const receiver = await User.findOne({ username: receiverUsername });
-    const receiverName = {
-      username: receiver.username,
-    };
-    sender.sentRequest.push(receiverName);
-    const senderDetails = {
-      userId: sender._id,
-      username: sender.username,
-    };
-    receiver.request.push(senderDetails);
-    sender.save();
-    receiver.save();
+    if (sender && receiver) {
+      const sentRequestAlreadySent = sender.sentRequest.find(
+        (request) => request.username === receiver.username
+      );
+      const friendRequestAlreadyExist = receiver.request.find(
+        (request) => request.username === sender.username
+      );
 
-    console.log(sender);
-    console.log(receiver);
-    res.status(200).json({ message: "success" });
+      if (sentRequestAlreadySent || friendRequestAlreadyExist) {
+        return res.status(400).json({ error: "something went wrong" });
+      }
+
+      const receiverName = {
+        username: receiver.username,
+      };
+      sender.sentRequest.push(receiverName);
+      const senderDetails = {
+        userId: sender._id,
+        username: sender.username,
+      };
+      receiver.request.push(senderDetails);
+      sender.save();
+      receiver.save();
+
+      console.log(sender);
+      console.log(receiver);
+      return res.status(200).json({ message: "success" });
+    }
   } catch (error) {
     res.status(400).json({ error: "something went wrong" });
   }
@@ -126,7 +164,30 @@ exports.blockUser = async (req, res) => {
   }
 };
 
-// var colors = ["red", "blue", "car", "green"];
-// var carIndex = colors.indexOf("car"); //get  "car" index
-// //remove car from the colors array
-// colors.splice(carIndex, 1);
+exports.getAllUserFriends = async (req, res) => {
+  const { username } = req.params;
+  try {
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ error: "No user found" });
+    }
+    const friends = user.friendsList;
+    return res.status(200).json(friends);
+  } catch (error) {
+    res.status(400).json({ error: "something went wrong" });
+  }
+};
+
+exports.getSentRequest = async (req, res) => {
+  const { username } = req.params;
+  try {
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(400).json({ error: "something went wrong" });
+    }
+    const userRequest = user.sentRequest;
+    return res.status(200).json({ userRequest });
+  } catch (error) {
+    res.status(400).json({ error: "something went wrong" });
+  }
+};
