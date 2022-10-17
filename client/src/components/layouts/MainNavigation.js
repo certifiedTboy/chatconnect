@@ -11,6 +11,11 @@ import styles from "./MainNavigation.module.css";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
 import { showFriendsRequestPage } from "../Profile/profileActions";
+import {
+  requestPending,
+  requestSuccess,
+  requestFailed,
+} from "../Profile/requestRedux/requestSlice";
 
 const navigation = [
   { name: "Home", href: "/", current: true },
@@ -23,6 +28,7 @@ function classNames(...classes) {
 
 const MainNavigation = () => {
   const { user } = useSelector((state) => state.login);
+  const { requestSuccess } = useSelector((state) => state.request);
   const [searchdata, setSearchData] = useState("");
   const [searchedUsers, setSearchedUsers] = useState([]);
   const [searchUsersFailed, setSearchUsersFailed] = useState("");
@@ -32,7 +38,6 @@ const MainNavigation = () => {
 
   const onLogoutUser = async () => {
     const response = await logoutUser();
-    console.log(response);
   };
 
   // logout function
@@ -70,17 +75,33 @@ const MainNavigation = () => {
     setFriendRequests(profile.request || []);
   };
 
-  useEffect(() => {
-    getUserFriendsRequest(user);
-  }, []);
-
-  const onAcceptRequest = (event) => {
-    acceptRequest(event.target.value);
+  const onAcceptRequest = async (event) => {
+    dispatch(requestPending());
+    try {
+      const response = await acceptRequest(event.target.value);
+      if (response.message !== "success") {
+        dispatch(requestFailed());
+      } else {
+        dispatch(requestSuccess());
+      }
+    } catch (error) {
+      dispatch(requestFailed());
+    }
   };
 
   const onRejectRequest = (event) => {
     cancelRequest(event.target.value);
   };
+
+  useEffect(() => {
+    getUserFriendsRequest(user);
+  }, [
+    onAcceptRequest,
+    onRejectRequest,
+    acceptRequest,
+    cancelRequest,
+    requestSuccess,
+  ]);
 
   const onSearchUsers = async () => {
     try {
@@ -91,8 +112,7 @@ const MainNavigation = () => {
         setSearchedUsers(response);
       }
     } catch (error) {
-      // setSearchUsersFailed(error);
-      console.log(error.error);
+      return error;
     }
   };
 
@@ -106,7 +126,7 @@ const MainNavigation = () => {
     searchResult = <div></div>;
   }
 
-  // render if no search result
+  // render if search result
   if (searchedUsers && searchedUsers.length > 0) {
     searchResult = searchedUsers.map((user) => (
       <a href={`/user/userprofile/${user.username}`}>
@@ -181,16 +201,16 @@ const MainNavigation = () => {
                 {user && (
                   <div>
                     <div>
-                      <div class="relative">
-                        <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none"></div>
+                      <div className="relative">
+                        <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none"></div>
                         <input
                           style={{ height: "30px", width: "300px" }}
                           type="search"
-                          class="me-2 block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                          className="me-2 block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                           placeholder="Search all users..."
                           onChange={changeSearchDataHandler}
                         />
-                        <div class={styles.dropdown}>
+                        <div className={styles.dropdown}>
                           <div id="myDropdown" class={styles.dropdownContent}>
                             {searchResult}
                           </div>
@@ -234,24 +254,54 @@ const MainNavigation = () => {
                                 <div>
                                   {friendRequests.map((request) => {
                                     return (
-                                      <div>
-                                        <p>{request.username}</p>
-                                        <Button
+                                      <div key={request._id}>
+                                        <a
+                                          href={`/user/userprofile/${request.username}`}
+                                        >
+                                          <p
+                                            style={{
+                                              marginLeft: "10px",
+                                              color: "Black",
+                                              fontSize: "20px",
+                                              fontWeight: "700",
+                                            }}
+                                          >
+                                            {request.username}
+                                          </p>{" "}
+                                        </a>
+                                        <button
+                                          className="bg-gray-800"
+                                          style={{
+                                            display: "inline-block",
+                                            marginRight: "10px",
+                                            marginLeft: "10px",
+                                            color: "white",
+                                            padding: "10px",
+                                            borderRadius: "10%",
+                                          }}
                                           variant="success"
                                           key={request._id}
                                           value={request.username}
                                           onClick={onAcceptRequest}
                                         >
                                           Accept
-                                        </Button>
+                                        </button>
 
-                                        <Button
-                                          variant="danger"
+                                        <button
+                                          style={{
+                                            display: "inline-block",
+                                            marginRight: "20px",
+                                            color: "white",
+                                            backgroundColor: "red",
+                                            padding: "10px",
+                                            borderRadius: "10%",
+                                          }}
+                                          variant="warning"
                                           value={request.username}
                                           onClick={onRejectRequest}
                                         >
                                           Decline
-                                        </Button>
+                                        </button>
                                       </div>
                                     );
                                   })}

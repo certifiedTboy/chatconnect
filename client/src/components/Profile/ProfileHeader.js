@@ -6,6 +6,7 @@ import {
   removeFriend,
   getAllUserFriends,
   cancelRequest,
+  getUserRequests,
 } from "../../lib/requestApi";
 import { getUserProfile } from "../../lib/userApi";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,8 +27,9 @@ const ProfileHeader = ({
   const [isLoading, setIsLoading] = useState(false);
   const [friendInclude, setFriendInclude] = useState(false);
   const [friendIsPending, setFriendIsPending] = useState(false);
-  const [cancelRequest, setCancelRequest] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+  const [userAlreadySentRequest, setUserAlreadySentRequest] = useState(false);
+  const { requestSuccess } = useSelector((state) => state.request);
 
   const onShowModal = () => {
     setShowModal(true);
@@ -42,9 +44,19 @@ const ProfileHeader = ({
     const response = await removeFriend(currentUserProfile.username);
     if (response.pending) {
       setIsLoading(true);
+    } else {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
+    if (response.message === "success") {
+      const friends = await getAllUserFriends();
+      const userIsFriend = friends.find(
+        (friend) => friend.username === currentUserProfile.username
+      );
+      if (!userIsFriend) {
+        setFriendInclude(false);
+        setFriendIsPending(false);
+      }
+    }
   };
 
   const sendFriendRequest = async () => {
@@ -52,19 +64,24 @@ const ProfileHeader = ({
     const response = await sendRequest(currentUserProfile.username);
     if (response.pending) {
       setIsLoading(true);
+    } else {
+      setIsLoading(false);
     }
-    setIsLoading(false);
+
+    if (response.ok) {
+      setFriendIsPending(true);
+    }
   };
 
   const onGetUserFriends = async () => {
-    const friends = await getAllUserFriends(username);
-    friends.map((friend) => {
-      if (user === friend.username) {
-        setFriendInclude(true);
-      } else {
-        setFriendInclude(false);
-      }
-    });
+    const friends = await getAllUserFriends();
+    const userIsFriend = friends.find(
+      (friend) => friend.username === currentUserProfile.username
+    );
+    if (userIsFriend) {
+      setFriendInclude(true);
+      setFriendIsPending(false);
+    }
   };
 
   const onGetSentRequest = async () => {
@@ -72,9 +89,9 @@ const ProfileHeader = ({
 
     if (sentRequest.userRequest.length >= 1) {
       const userRequest = sentRequest.userRequest.find(
-        (req) => req.username === username
+        (req) => req.username === currentUserProfile.username
       );
-      if (userRequest.username === username) {
+      if (userRequest.username === currentUserProfile.username) {
         setFriendIsPending(true);
       }
     }
@@ -82,16 +99,50 @@ const ProfileHeader = ({
 
   const onCancelRequest = async () => {
     const response = await cancelRequest(username);
-    if (response.ok) {
-      setFriendIsPending(false);
+
+    if (response.message === "success") {
+      const sentRequest = await getUserSentRequest(user);
+      if (sentRequest.userRequest || []) {
+        const userRequestExist = sentRequest.userRequest.find(
+          (req) => req.username === currentUserProfile.username
+        );
+
+        if (!userRequestExist) {
+          setFriendIsPending(false);
+        }
+      }
     }
-    setFriendIsPending(true);
+  };
+
+  const onGetUserRequests = async () => {
+    try {
+      const userRequest = await getUserRequests(username);
+      if (userRequest.length > 0) {
+        const userBelongsToRequest = userRequest.find(
+          (request) => request.username === user
+        );
+        if (userBelongsToRequest) {
+          setUserAlreadySentRequest(true);
+        }
+      }
+    } catch (error) {
+      return error;
+    }
   };
 
   useEffect(() => {
     onGetUserFriends();
     onGetSentRequest();
-  }, [username, onGetUserFriends, sendFriendRequest, removeUserAsFriend]);
+    onGetUserRequests();
+  }, [
+    username,
+    onGetUserFriends,
+    sendFriendRequest,
+    removeUserAsFriend,
+    onCancelRequest,
+    onGetUserRequests,
+    requestSuccess,
+  ]);
 
   const aboutPage = async () => {
     dispatch(loadingPage());
@@ -115,21 +166,13 @@ const ProfileHeader = ({
   };
 
   let addFriendActionButton = (
-    <Button
-      variant="success"
-      disabled={isLoading}
-      onClick={!isLoading ? sendFriendRequest : null}
-    >
+    <Button variant="success" disabled={isLoading} onClick={sendFriendRequest}>
       {isLoading ? "Loading…" : "Add Friend"}
     </Button>
   );
 
   let removeFriendActionButton = (
-    <Button
-      variant="danger"
-      disabled={isLoading}
-      onClick={!isLoading ? removeUserAsFriend : null}
-    >
+    <Button variant="danger" disabled={isLoading} onClick={removeUserAsFriend}>
       {isLoading ? "Loading…" : "Remove Friend"}
     </Button>
   );

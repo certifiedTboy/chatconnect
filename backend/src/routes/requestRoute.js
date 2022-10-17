@@ -8,6 +8,7 @@ const {
   removeFriend,
   getAllUserFriends,
   getSentRequest,
+  getUserRequests,
 } = require("../controllers/request.controller");
 const router = express.Router();
 
@@ -21,6 +22,7 @@ router.get(
   requireSignin,
   getSentRequest
 );
+router.get("/user/request/:username/requests", requireSignin, getUserRequests);
 router.post("/user/requests", requireSignin, sendRequest);
 router.post("/user/requests/acceptrequest", requireSignin, acceptRequest);
 router.post("/user/requests/cancelrequest", requireSignin, cancelRequest);

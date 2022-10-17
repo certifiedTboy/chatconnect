@@ -43,7 +43,6 @@ export const userRegisteration = async (userData) => {
 };
 
 //User Logout Api
-
 export const logoutUser = async () => {
   try {
     const response = await fetch("http://localhost:3001/signout", {

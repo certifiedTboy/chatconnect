@@ -88,10 +88,12 @@ const listen = (io) => {
       const user = userLeave(socket.id);
 
       if (user) {
-        io.to(user.room).emit(
-          "message",
-          generalMessageFormat(botName, `${user.username} has left the chat`)
-        );
+        socket.broadcast
+          .to(user.room)
+          .emit(
+            "message",
+            generalMessageFormat(botName, `${user.username} has left the chat`)
+          );
 
         // Send users and room info
         io.to(user.room).emit("roomUsers", {
@@ -99,6 +101,9 @@ const listen = (io) => {
           users: getRoomUsers(user.room),
           profile: await getAllUsersProfile(),
         });
+        console.log(
+          `this is leave room  ${JSON.stringify(getRoomUsers(user.room))}`
+        );
       }
     });
   });

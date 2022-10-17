@@ -98,6 +98,8 @@ const Chat = () => {
     play2();
   }
 
+  console.log(socketRoomUsers);
+
   return (
     <div className="container-fluid">
       <Row>

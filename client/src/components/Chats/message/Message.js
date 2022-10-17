@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 import { Fragment } from "react";
 
 const Message = ({ id, own, sender, message, time, image }) => {
+  // console.log(id, own, sender, message, time, image);
   return (
     <Fragment>
       {" "}

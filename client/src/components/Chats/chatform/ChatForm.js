@@ -38,7 +38,7 @@ const ChatForm = (props) => {
     // creating an object data from chat input state and active current user
     const data = {
       message,
-      sender: newUser.username,
+      sender: newUser.C_U,
     };
 
     play();

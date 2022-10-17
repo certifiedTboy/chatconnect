@@ -159,11 +159,12 @@ export const removeFriend = async (friendUsername) => {
   }
 };
 
-export const getAllUserFriends = async (username) => {
+export const getAllUserFriends = async () => {
   const token = localStorage.getItem("accessJWT");
-
+  const user = localStorage.getItem("user");
+  const username = JSON.parse(user);
   const response = await fetch(
-    `http://localhost:3001/user/request/${username}/allFriends`,
+    `http://localhost:3001/user/request/${username.C_U}/allFriends`,
     {
       method: "GET",
       headers: {
@@ -190,6 +191,32 @@ export const getUserSentRequest = async (username) => {
 
   const response = await fetch(
     `http://localhost:3001/user/request/${username}/sentrequests`,
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "auth-token": `${token}`,
+      },
+    }
+  );
+
+  try {
+    const data = await response.json();
+    if (!response.ok) {
+      return data;
+    }
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getUserRequests = async (username) => {
+  const token = localStorage.getItem("accessJWT");
+
+  const response = await fetch(
+    `http://localhost:3001/user/request/${username}/requests`,
     {
       method: "GET",
       headers: {

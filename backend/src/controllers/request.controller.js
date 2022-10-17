@@ -1,31 +1,6 @@
 const crypto = require("crypto");
 const User = require("../models/user");
 
-// exports.sendRequest = async (req, res) => {
-//   try {
-//     const { senderUsername, receiverUsername } = req.body;
-//     const sender = await User.findOne({ username: senderUsername });
-//     const receiver = await User.findOne({ username: receiverUsername });
-//     const receiverName = {
-//       username: receiver.username,
-//     };
-//     sender.sentRequest.push(receiverName);
-//     const senderDetails = {
-//       userId: sender._id,
-//       username: sender.username,
-//     };
-//     receiver.request.push(senderDetails);
-//     sender.save();
-//     receiver.save();
-
-//     console.log(sender);
-//     console.log(receiver);
-//     res.status(200).json({ message: "success" });
-//   } catch (error) {
-//     res.status(400).json({ error: "something went wrong" });
-//   }
-// };
-
 exports.sendRequest = async (req, res) => {
   const { senderUsername, receiverUsername } = req.body;
   try {
@@ -54,9 +29,6 @@ exports.sendRequest = async (req, res) => {
       receiver.request.push(senderDetails);
       sender.save();
       receiver.save();
-
-      console.log(sender);
-      console.log(receiver);
       return res.status(200).json({ message: "success" });
     }
   } catch (error) {
@@ -95,8 +67,6 @@ exports.acceptRequest = async (req, res) => {
 
     user.save();
     sender.save();
-    console.log(user);
-    console.log(sender);
     return res.status(200).json({ message: "success" });
   } catch (error) {
     res.status(400).json({ error: "something went wrong" });
@@ -110,15 +80,13 @@ exports.cancelRequest = async (req, res) => {
     const user = await User.findOne({ username: currentUser });
     const sender = await User.findOne({ username: requestSenderName });
 
-    const requestIndex = user.request.indexOf(sender._id);
-    const sentRequestIndex = sender.sentRequest.indexOf(user.username);
-    await sender.sentRequest.splice(sentRequestIndex, 1);
-    await user.request.splice(requestIndex, 1);
+    const requestIndex = user.sentRequest.indexOf(sender.username);
+    const sentRequestIndex = sender.request.indexOf(user.username);
+    await sender.request.splice(requestIndex, 1);
+    await user.sentRequest.splice(sentRequestIndex, 1);
 
     user.save();
     sender.save();
-    console.log(user);
-    console.log(sender);
     return res.status(200).json({ message: "success" });
   } catch (error) {
     res.status(400).json({ error: "something went wrong" });
@@ -138,8 +106,6 @@ exports.removeFriend = async (req, res) => {
 
     user.save();
     friend.save();
-    console.log(user);
-    console.log(friend);
     return res.status(200).json({ message: "success" });
   } catch (error) {
     res.status(400).json({ error: "something went wrong" });
@@ -187,6 +153,20 @@ exports.getSentRequest = async (req, res) => {
     }
     const userRequest = user.sentRequest;
     return res.status(200).json({ userRequest });
+  } catch (error) {
+    res.status(400).json({ error: "something went wrong" });
+  }
+};
+
+exports.getUserRequests = async (req, res) => {
+  const { username } = req.params;
+  try {
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(400).json({ error: "something went wrong" });
+    }
+    const requestOfUser = user.request;
+    return res.status(400).json(requestOfUser);
   } catch (error) {
     res.status(400).json({ error: "something went wrong" });
   }
