@@ -37,7 +37,7 @@ exports.sendRequest = async (req, res) => {
 };
 
 exports.acceptRequest = async (req, res) => {
-  const messagingId = await crypto.randomBytes(20).toString("hex");
+  const messagingId = crypto.randomBytes(5).toString("hex");
   try {
     const { currentUser, requestSenderName } = req.body;
     console.log(currentUser, requestSenderName);

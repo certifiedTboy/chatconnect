@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import Profile from "../components/Profile/Profile";
 import { useParams } from "react-router-dom";
 import { getUserProfile, getAllProfiles } from "../lib/userApi";
+import { useSelector } from "react-redux";
 
 const UserProfilePage = () => {
   const params = useParams();
   const { username } = params;
-
+  const { requestSuccess } = useSelector((state) => state.request);
   const [userProfile, setUserProfile] = useState({});
   const [userprofilePicture, setUserprofilePicture] = useState("");
   const [allProfiles, setAllProfiles] = useState([]);
@@ -22,7 +23,7 @@ const UserProfilePage = () => {
 
   useEffect(() => {
     getUserProfileDetails();
-  }, [username]);
+  }, [username, requestSuccess]);
 
   const listOfFriends = allProfiles.filter((prof) =>
     friends.some((frnd) => prof.user.username === frnd.username)

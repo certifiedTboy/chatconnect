@@ -10,15 +10,16 @@ import {
 } from "../../lib/requestApi";
 import { getUserProfile } from "../../lib/userApi";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  requestPending,
+  requestSuccess,
+  requestFaild,
+} from "./requestRedux/requestSlice";
 import { showAboutPage, loadingPage } from "./profileActions";
 import Button from "react-bootstrap/Button";
 import { useParams } from "react-router-dom";
 
-const ProfileHeader = ({
-  currentUserProfile,
-  userprofilePicture,
-  userFriendsList,
-}) => {
+const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
   const dispatch = useDispatch();
   const params = useParams();
   const username = params.username;
@@ -55,6 +56,7 @@ const ProfileHeader = ({
       if (!userIsFriend) {
         setFriendInclude(false);
         setFriendIsPending(false);
+        dispatch(requestSuccess());
       }
     }
   };
@@ -66,6 +68,7 @@ const ProfileHeader = ({
       setIsLoading(true);
     } else {
       setIsLoading(false);
+      dispatch(requestSuccess());
     }
 
     if (response.ok) {
@@ -109,6 +112,7 @@ const ProfileHeader = ({
 
         if (!userRequestExist) {
           setFriendIsPending(false);
+          dispatch(requestSuccess());
         }
       }
     }
