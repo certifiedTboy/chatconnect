@@ -17,7 +17,7 @@ import {
 } from "./requestRedux/requestSlice";
 import { showAboutPage, loadingPage } from "./profileActions";
 import Button from "react-bootstrap/Button";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
   const dispatch = useDispatch();
@@ -169,28 +169,39 @@ const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
     setIsHovering(false);
   };
 
-  let addFriendActionButton = (
-    <Button variant="success" disabled={isLoading} onClick={sendFriendRequest}>
-      {isLoading ? "Loading…" : "Add Friend"}
-    </Button>
+  const addFriendActionButton = (
+    <li className="px-3 d-inline font-semibold text-gray-600">
+      <a href="#" disabled={isLoading} onClick={sendFriendRequest}>
+        {isLoading ? "Loading…" : "Add Friend"}
+      </a>
+    </li>
   );
 
-  let removeFriendActionButton = (
-    <Button variant="danger" disabled={isLoading} onClick={removeUserAsFriend}>
-      {isLoading ? "Loading…" : "Remove Friend"}
-    </Button>
+  const removeFriendActionButton = (
+    <li className="px-3 d-inline font-semibold text-gray-600">
+      <a href="#" disabled={isLoading} onClick={removeUserAsFriend}>
+        {isLoading ? "Loading…" : "Remove Friend"}
+      </a>
+    </li>
   );
 
-  let pendingFriendActionButton = (
-    <Button
-      variant={isHovering ? "warning" : "light"}
-      // disabled={isHovering ? false : true}
-      onMouseOver={handleMouseOver}
-      onMouseOut={handleMouseOut}
-      onClick={onCancelRequest}
-    >
-      {isHovering ? "Cancel Request" : "Request Pending..."}
-    </Button>
+  const pendingFriendActionButton = (
+    <li className="px-3 d-inline font-semibold text-gray-600">
+      <a
+        href="#"
+        onMouseOver={handleMouseOver}
+        onMouseOut={handleMouseOut}
+        onClick={onCancelRequest}
+      >
+        {isHovering ? "Cancel Request" : "Request Pending..."}
+      </a>{" "}
+    </li>
+  );
+
+  const sendMessageLink = (
+    <li className="px-3 d-inline font-semibold text-gray-600">
+      <a href="#">Send Message</a>{" "}
+    </li>
   );
 
   return (
@@ -269,6 +280,11 @@ const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
                   friendInclude === true &&
                   friendIsPending === false &&
                   removeFriendActionButton}
+
+                {user !== username &&
+                  friendInclude === true &&
+                  friendIsPending === false &&
+                  sendMessageLink}
               </li>
             </ul>
             <ul className="flex mb:pl-14">
@@ -283,11 +299,11 @@ const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
                   </button>
                 </li>
               )}
-              <li className="px-2 font-semibold">
+              {/* <li className="px-2 font-semibold">
                 <button className="bg-gray-200 px-3 py-1 rounded-lg text-black font-semibold">
                   ...
                 </button>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>

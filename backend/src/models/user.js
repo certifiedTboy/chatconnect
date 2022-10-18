@@ -4,91 +4,109 @@ const mongoose = require("mongoose");
 
 // const bcrypt = require("bcrypt");
 const Schema = mongoose.Schema;
-const userSchema = new Schema({
-  username: {
-    type: String,
-    index: true,
-    trim: true,
-  },
-  name: {
-    type: String,
-    require: true,
-  },
-  phoneNumber: {
-    type: String,
-    unique: true,
-    required: true,
-    trim: true,
-  },
-  email: {
-    type: String,
-    unique: true,
-    trim: true,
-    required: true,
-  },
-  about: {
-    type: String,
-  },
-  isPrivate: {
-    type: Boolean,
-    default: false,
-  },
-  password: {
-    type: String,
-    require: true,
-    trim: true,
-  },
-
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-  resetPasswordToken: String,
-  resetPasswordExpires: Date,
-
-  //Associated data
-  profile: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Profile",
-  },
-
-  sentRequest: [
-    {
-      username: { type: String, default: "" },
+const userSchema = new Schema(
+  {
+    username: {
+      type: String,
+      index: true,
+      trim: true,
     },
-  ],
-  request: [
-    {
-      userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+    name: {
+      type: String,
+      require: true,
+    },
+    phoneNumber: {
+      type: String,
+      unique: true,
+      required: true,
+      trim: true,
+    },
+    email: {
+      type: String,
+      unique: true,
+      trim: true,
+      required: true,
+    },
+    about: {
+      type: String,
+      reactions: [
+        {
+          type: String,
+          user: {
+            username: String,
+            userId: String,
+            name: String,
+          },
+        },
+      ],
+      comments: [
+        {
+          text: String,
+          user: {
+            username: String,
+            userId: String,
+            name: String,
+          },
+        },
+      ],
+    },
+    isPrivate: {
+      type: Boolean,
+      default: false,
+    },
+    password: {
+      type: String,
+      require: true,
+      trim: true,
+    },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
+
+    //Associated data
+    profile: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Profile",
+    },
+
+    sentRequest: [
+      {
+        username: { type: String, default: "" },
       },
-      username: {
-        type: String,
-        default: "",
+    ],
+    request: [
+      {
+        userId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+        username: {
+          type: String,
+          default: "",
+        },
       },
-    },
-  ],
-  friendsList: [
-    {
-      friendId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-      friendName: { type: String },
-      username: { type: String },
-      messagingId: {
-        type: String,
-        required: true,
-        unique: false,
+    ],
+    friendsList: [
+      {
+        friendId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        friendName: { type: String },
+        username: { type: String },
+        messagingId: {
+          type: String,
+          required: true,
+          unique: false,
+        },
       },
-    },
-  ],
+    ],
 
-  blockedUsers: [
-    {
-      friendId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-      friendName: { type: String },
-    },
-  ],
-});
+    blockedUsers: [
+      {
+        friendId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        friendName: { type: String },
+      },
+    ],
+  },
+  { timestamps: true }
+);
 
 const User = mongoose.model("user", userSchema);
 

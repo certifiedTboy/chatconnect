@@ -40,7 +40,6 @@ exports.acceptRequest = async (req, res) => {
   const messagingId = crypto.randomBytes(5).toString("hex");
   try {
     const { currentUser, requestSenderName } = req.body;
-    console.log(currentUser, requestSenderName);
     const user = await User.findOne({ username: currentUser });
     const sender = await User.findOne({ username: requestSenderName });
     const userFriendListDetails = {
@@ -76,7 +75,6 @@ exports.acceptRequest = async (req, res) => {
 exports.cancelRequest = async (req, res) => {
   try {
     const { currentUser, requestSenderName } = req.body;
-    console.log(currentUser, requestSenderName);
     const user = await User.findOne({ username: currentUser });
     const sender = await User.findOne({ username: requestSenderName });
 

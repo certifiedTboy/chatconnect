@@ -13,6 +13,7 @@ const Profile = ({
   currentUserProfile,
   userprofilePicture,
   userFriendsList,
+  updateTime,
 }) => {
   const [friendsList, setFriendsList] = useState([]);
   const dispatch = useDispatch();
@@ -54,7 +55,7 @@ const Profile = ({
               {/* LEFT */}
               <div>
                 {/* // INTRO */}
-                <div className="mr-12 mt-4">
+                {/* <div className="mr-12 mt-4">
                   <div
                     className="p-4 shadow rounded-lg bg-white w-80"
                     id="intro"
@@ -62,7 +63,7 @@ const Profile = ({
                     <h1 className="font-bold text-xl">Intro</h1>
                     <p>Full Stack Web Developer</p>
                   </div>
-                </div>
+                </div> */}
 
                 {/* // FRIENDS */}
                 <div className="mr-12 mt-4">
@@ -118,7 +119,13 @@ const Profile = ({
 
                 {/* POST */}
                 {profileLoading === true && <LoadingSpinner />}
-                {aboutPage === true && <About />}
+                {aboutPage === true && (
+                  <About
+                    currentUserProfile={currentUserProfile}
+                    userprofilePicture={userprofilePicture}
+                    updateTime={updateTime}
+                  />
+                )}
                 {friendsRequest === true && <RequestPage />}
                 {allFriends === true && (
                   <FriendsPage friendsList={userFriendsList} />

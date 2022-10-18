@@ -2,9 +2,28 @@ import React, { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-
+import { updateAbout } from "../../lib/userApi";
 const ProfileModal = ({ show, onHideModal, currentUserProfile }) => {
   // const [show, setShow] = useState(false);
+  const [about, setAbout] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const onUpdateUserAbout = async (event) => {
+    setIsLoading(true);
+    try {
+      const response = await updateAbout(about);
+      if (response.message === "success") {
+        setIsLoading(false);
+        console.log(response);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleAboutChangeHandler = (event) => {
+    setAbout(event.target.value);
+  };
 
   const handleClose = () => {
     onHideModal();
@@ -50,8 +69,10 @@ const ProfileModal = ({ show, onHideModal, currentUserProfile }) => {
             >
               <Form.Label>About</Form.Label>
               <Form.Control
+                onChange={handleAboutChangeHandler}
+                value={about}
                 as="textarea"
-                rows={3}
+                rows={6}
                 placeholder="Write Briefly About Yourself..."
               />
             </Form.Group>
@@ -61,7 +82,7 @@ const ProfileModal = ({ show, onHideModal, currentUserProfile }) => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleClose}>
+          <Button variant="primary" onClick={onUpdateUserAbout}>
             Save Changes
           </Button>
         </Modal.Footer>

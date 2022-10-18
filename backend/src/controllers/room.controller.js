@@ -1,5 +1,6 @@
 const Rooms = require("../models/rooms");
 const Chat = require("../models/chat");
+const User = require("../models/user");
 
 exports.createRoom = async (req, res) => {
   try {

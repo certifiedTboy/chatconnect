@@ -11,7 +11,7 @@ const FriendsPage = ({ friendsList }) => {
 
   const noFriendContentForCurrentUser = (
     <>
-      <div className="col-4 mt-5"></div>{" "}
+      <div className="col-4"></div>{" "}
       <div className="col-4">
         {" "}
         <h1
@@ -30,7 +30,7 @@ const FriendsPage = ({ friendsList }) => {
 
   const noFriendContentForOtherUser = (
     <>
-      <div className="col-4 mt-5"></div>{" "}
+      <div className="col-4"></div>{" "}
       <div className="col-4">
         {" "}
         <h1
@@ -49,7 +49,7 @@ const FriendsPage = ({ friendsList }) => {
 
   const friendContent = (
     <>
-      <div className="container mt-3">
+      <div className="container">
         <div className="row">
           {friendsList.map((friend) => {
             return (
@@ -72,7 +72,7 @@ const FriendsPage = ({ friendsList }) => {
   );
 
   return (
-    <div>
+    <div className="mt-5">
       {user === username &&
         friendsList.length === 0 &&
         noFriendContentForCurrentUser}

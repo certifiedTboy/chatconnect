@@ -24,7 +24,7 @@ export const getCurrentUserFromServer = async () => {
     if (!response.ok) {
       return data;
     }
-    console.log(typeof data);
+
     return data.username;
     return data;
   } catch (error) {
@@ -48,7 +48,6 @@ export const getUserProfile = async (username) => {
     );
     const data = await response.json();
     if (!response.ok) {
-      console.log(data);
       return data.message;
     }
     return data;
@@ -105,6 +104,37 @@ export const uploadImage = async (fileData) => {
   }
 };
 
+export const updateAbout = async (about) => {
+  const token = localStorage.getItem("accessJWT");
+  const data = {
+    about,
+  };
+
+  const response = await fetch(
+    `http://localhost:3001/users/profile/about/update`,
+    {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "auth-token": `${token}`,
+      },
+    }
+  );
+
+  try {
+    const data = await response.json();
+    if (!response.ok) {
+      return data;
+    }
+
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const searchUsers = async (searchValue) => {
   const token = localStorage.getItem("accessJWT");
   try {
@@ -124,7 +154,6 @@ export const searchUsers = async (searchValue) => {
     }
 
     const data = await response.json();
-    console.log(data);
     return data;
   } catch (error) {
     return error;

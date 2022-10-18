@@ -33,6 +33,7 @@ const UserProfilePage = () => {
     <>
       <Profile
         currentUserProfile={userProfile}
+        updateTime={userProfile.updatedAt}
         userprofilePicture={userprofilePicture}
         userFriendsList={listOfFriends}
       />

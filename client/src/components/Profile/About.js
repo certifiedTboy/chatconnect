@@ -1,6 +1,7 @@
 import React from "react";
+import { format } from "timeago.js";
 
-const About = (props) => {
+const About = ({ currentUserProfile, userprofilePicture, updateTime }) => {
   return (
     <div>
       {/* // POST */}
@@ -10,15 +11,17 @@ const About = (props) => {
           <div className="flex space-x-2 items-center">
             <div className="relative">
               <img
-                src="./images/profile_photo_cat.jpg"
+                src={`http://localhost:3001/${userprofilePicture}`}
                 alt="Profile picture"
                 className="w-10 h-10 rounded-full"
               />
               <span className="bg-green-500 w-3 h-3 rounded-full absolute right-0 top-3/4 border-white border-2"></span>
             </div>
             <div>
-              <div className="font-semibold">Can Canbolat</div>
-              <span className="text-sm text-gray-500">10h</span>
+              <div className="font-semibold">{currentUserProfile.name}</div>
+              <span className="text-sm text-gray-500">
+                {format(updateTime)}
+              </span>
             </div>
           </div>
           <div className="w-8 h-8 grid place-items-center text-xl text-gray-500 hover:bg-gray-200 rounded-full cursor-pointer">
@@ -28,17 +31,8 @@ const About = (props) => {
         {/* END POST AUTHOR */}
 
         {/* POST CONTENT */}
-        <div className="text-justify px-4 py-2">
-          <p>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of type
-            and scrambled it to make a type specimen book. It has survived not
-            only five centuries, but also the leap into electronic typesetting,
-            remaining essentially unchanged. It was popularised in the 1960s
-            with the release of Letraset sheets containing Lorem Ipsum passages,
-            and more recently with d
-          </p>
+        <div className="text-justify px-4" style={{ marginLeft: "50px" }}>
+          <p>{currentUserProfile.about}</p>
         </div>
         {/* END POST CONTENT */}
         {/* POST EVENTS */}
