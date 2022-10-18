@@ -11,9 +11,9 @@ import {
 import { getUserProfile } from "../../lib/userApi";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  requestPending,
-  requestSuccess,
-  requestFaild,
+  pendingRequest,
+  successRequest,
+  failedRequest,
 } from "./requestRedux/requestSlice";
 import { showAboutPage, loadingPage } from "./profileActions";
 import Button from "react-bootstrap/Button";
@@ -56,7 +56,7 @@ const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
       if (!userIsFriend) {
         setFriendInclude(false);
         setFriendIsPending(false);
-        dispatch(requestSuccess());
+        dispatch(successRequest());
       }
     }
   };
@@ -68,7 +68,7 @@ const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
       setIsLoading(true);
     } else {
       setIsLoading(false);
-      dispatch(requestSuccess());
+      dispatch(successRequest());
     }
 
     if (response.ok) {
@@ -112,7 +112,7 @@ const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
 
         if (!userRequestExist) {
           setFriendIsPending(false);
-          dispatch(requestSuccess());
+          dispatch(successRequest());
         }
       }
     }

@@ -1,22 +1,33 @@
 import React, { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+import { useSelector, useDispatch } from "react-redux";
 import Form from "react-bootstrap/Form";
 import { updateAbout } from "../../lib/userApi";
+import LoadingSpinner from "../UI/LoadingSpinner";
+import {
+  pendingRequest,
+  successRequest,
+  failedRequest,
+} from "../Profile/requestRedux/requestSlice";
 const ProfileModal = ({ show, onHideModal, currentUserProfile }) => {
+  const dispatch = useDispatch();
   // const [show, setShow] = useState(false);
   const [about, setAbout] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
+  const { requestSuccess } = useSelector((state) => state.request);
   const onUpdateUserAbout = async (event) => {
-    setIsLoading(true);
+    dispatch(pendingRequest());
     try {
       const response = await updateAbout(about);
+      if (response.pending) {
+        dispatch(pendingRequest());
+      }
       if (response.message === "success") {
-        setIsLoading(false);
-        console.log(response);
+        dispatch(successRequest());
+        onHideModal();
       }
     } catch (error) {
+      dispatch(failedRequest());
       console.log(error);
     }
   };
@@ -39,7 +50,7 @@ const ProfileModal = ({ show, onHideModal, currentUserProfile }) => {
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+            {/* <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <Form.Label>Account Name</Form.Label>
               <Form.Control
                 defaultValue={currentUserProfile.name}
@@ -62,7 +73,7 @@ const ProfileModal = ({ show, onHideModal, currentUserProfile }) => {
                 type="text"
                 autoFocus
               />
-            </Form.Group>
+            </Form.Group> */}
             <Form.Group
               className="mb-3"
               controlId="exampleForm.ControlTextarea1"

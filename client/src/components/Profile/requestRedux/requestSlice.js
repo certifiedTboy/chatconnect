@@ -11,17 +11,17 @@ const requestSlice = createSlice({
   name: "request",
   initialState,
   reducers: {
-    requestSuccess: (state) => {
+    successRequest: (state) => {
       state.requestLoading = false;
       state.requestSuccess = true;
       state.requestFailed = false;
     },
-    requestPending: (state) => {
+    pendingRequest: (state) => {
       state.requestLoading = true;
       state.requestSuccess = false;
       state.requestFailed = false;
     },
-    requestFailed: (state) => {
+    failedRequest: (state) => {
       state.requestLoading = false;
       state.requestSuccess = false;
       state.requestFailed = true;
@@ -31,6 +31,6 @@ const requestSlice = createSlice({
 
 const { reducer, actions } = requestSlice;
 
-export const { requestPending, requestSuccess, requestFailed } = actions;
+export const { successRequest, pendingRequest, failedRequest } = actions;
 
 export default reducer;

@@ -12,9 +12,9 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
 import { showFriendsRequestPage } from "../Profile/profileActions";
 import {
-  requestPending,
-  requestSuccess,
-  requestFailed,
+  pendingRequest,
+  successRequest,
+  failedRequest,
 } from "../Profile/requestRedux/requestSlice";
 
 const navigation = [
@@ -76,16 +76,16 @@ const MainNavigation = () => {
   };
 
   const onAcceptRequest = async (event) => {
-    dispatch(requestPending());
+    dispatch(pendingRequest());
     try {
       const response = await acceptRequest(event.target.value);
       if (response.message !== "success") {
-        dispatch(requestFailed());
+        dispatch(failedRequest());
       } else {
-        dispatch(requestSuccess());
+        dispatch(successRequest());
       }
     } catch (error) {
-      dispatch(requestFailed());
+      dispatch(failedRequest());
     }
   };
 
