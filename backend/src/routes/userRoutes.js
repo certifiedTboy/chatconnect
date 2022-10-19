@@ -29,16 +29,16 @@ router.get("/search/:searchdata", requireSignin, searchUsers);
 router.get("/users/profiles", getAllProfiles);
 router.put("/users/profile/update", requireSignin, updateUser);
 router.post("/users/profile/about/update", requireSignin, updateUserAbout);
-router.post(
-  "/users/profile/about/:username/comment",
-  requireSignin,
-  commentToAbout
-);
-router.post(
-  "/users/profile/about/:username/reaction",
-  requireSignin,
-  reactToAbout
-);
+// router.post(
+//   "/users/profile/about/:username/comment",
+//   requireSignin,
+//   commentToAbout
+// );
+// router.post(
+//   "/users/profile/about/:username/reaction",
+//   requireSignin,
+//   reactToAbout
+// );
 
 router.put(
   "/user/profile-upload",

@@ -29,26 +29,6 @@ const userSchema = new Schema(
     },
     about: {
       type: String,
-      reactions: [
-        {
-          type: String,
-          user: {
-            username: String,
-            userId: String,
-            name: String,
-          },
-        },
-      ],
-      comments: [
-        {
-          text: String,
-          user: {
-            username: String,
-            userId: String,
-            name: String,
-          },
-        },
-      ],
     },
     isPrivate: {
       type: Boolean,

@@ -111,55 +111,58 @@ exports.updateUserAbout = async (req, res) => {
   }
 };
 
-exports.commentToAbout = async (req, res) => {
-  const userId = req.user.id;
-  const { username } = req.params;
-  const { text } = req.body;
-  try {
-    const currentUser = await User.findById(userId);
-    const aboutOwner = await User.findOne({ username });
-    const userData = {
-      username: currentUser.username,
-      userId: currentUser._id,
-      name: currentUser.name,
-    };
-    const commentData = {
-      text,
-      userData,
-    };
-    const userAbout = aboutOwner.profile;
-    userAbout.comments.push(commentData);
-    await aboutOwner.save();
-    res.status(200).json(aboutOwner);
-  } catch (error) {
-    res.status(400).json({ error: "something went wrong" });
-  }
-};
+// exports.commentToAbout = async (req, res) => {
+//   const userId = req.user.id;
+//   const { username } = req.params;
+//   const { text } = req.body;
 
-exports.reactToAbout = async (req, res) => {
-  const userId = req.user.id;
-  const { username } = req.params;
-  const { like } = req.body;
-  try {
-    const currentUser = await User.findById(userId);
-    const aboutOwner = await User.findOne({ username });
-    const userData = {
-      username: currentUser.username,
-      userId: currentUser._id,
-      name: currentUser.name,
-    };
-    const reactionData = {
-      like,
-      userData,
-    };
-    const userAbout = aboutOwner.profile;
-    userAbout.reactions.push(reactionData);
-    await aboutOwner.save();
-    res.status(200).json(aboutOwner);
-  } catch (error) {
-    res.status(400).json({ error: "something went wrong" });
-  }
-};
+//   try {
+//     const currentUser = await User.findById(userId);
+//     const aboutOwner = await User.findOne({ username });
+//     const userData = {
+//       username: currentUser.username,
+//       userId: currentUser._id,
+//       name: currentUser.name,
+//     };
+//     const commentData = {
+//       text,
+//       userData,
+//     };
+//     const userAbout = aboutOwner.about;
+//     userAbout.comments.push(commentData);
+//     await aboutOwner.save();
+//     console.log(aboutOwner);
+//     res.status(200).json(aboutOwner);
+//   } catch (error) {
+//     console.log(error);
+//     res.status(400).json({ error: "something went wrong" });
+//   }
+// };
+
+// exports.reactToAbout = async (req, res) => {
+//   const userId = req.user.id;
+//   const { username } = req.params;
+//   const { like } = req.body;
+//   try {
+//     const currentUser = await User.findById(userId);
+//     const aboutOwner = await User.findOne({ username });
+//     const userData = {
+//       username: currentUser.username,
+//       userId: currentUser._id,
+//       name: currentUser.name,
+//     };
+//     const reactionData = {
+//       like,
+//       userData,
+//     };
+//     const userAbout = aboutOwner.profile;
+//     userAbout.reactions.push(reactionData);
+//     await aboutOwner.save();
+//     res.status(200).json(aboutOwner);
+//   } catch (error) {
+//     res.status(400).json({ error: "something went wrong" });
+//   }
+// };
 
 exports.searchUsers = async (req, res) => {
   const { searchdata } = req.params;

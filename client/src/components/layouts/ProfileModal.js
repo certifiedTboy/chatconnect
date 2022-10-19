@@ -4,7 +4,6 @@ import Button from "react-bootstrap/Button";
 import { useSelector, useDispatch } from "react-redux";
 import Form from "react-bootstrap/Form";
 import { updateAbout } from "../../lib/userApi";
-import LoadingSpinner from "../UI/LoadingSpinner";
 import {
   pendingRequest,
   successRequest,
@@ -24,11 +23,11 @@ const ProfileModal = ({ show, onHideModal, currentUserProfile }) => {
       }
       if (response.message === "success") {
         dispatch(successRequest());
+        setAbout("");
         onHideModal();
       }
     } catch (error) {
       dispatch(failedRequest());
-      console.log(error);
     }
   };
 
@@ -50,30 +49,6 @@ const ProfileModal = ({ show, onHideModal, currentUserProfile }) => {
         </Modal.Header>
         <Modal.Body>
           <Form>
-            {/* <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Account Name</Form.Label>
-              <Form.Control
-                defaultValue={currentUserProfile.name}
-                type="text"
-                autoFocus
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Username</Form.Label>
-              <Form.Control
-                defaultValue={currentUserProfile.username}
-                type="text"
-                autoFocus
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Phone Number</Form.Label>
-              <Form.Control
-                defaultValue={currentUserProfile.phoneNumber}
-                type="text"
-                autoFocus
-              />
-            </Form.Group> */}
             <Form.Group
               className="mb-3"
               controlId="exampleForm.ControlTextarea1"

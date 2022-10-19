@@ -135,6 +135,35 @@ export const updateAbout = async (about) => {
   }
 };
 
+// export const commentToAbout = async (username, text) => {
+//   const token = localStorage.getItem("accessJWT");
+//   const commentData = {
+//     text,
+//   };
+//   console.log(commentData);
+//   try {
+//     const response = await fetch(
+//       `http://localhost:3001/users/profile/about/${username}/comment`,
+//       {
+//         method: "POST",
+//         body: JSON.stringify(commentData),
+//         headers: {
+//           Accept: "application/json",
+//           "Content-Type": "application/json",
+//           "auth-token": `${token}`,
+//         },
+//       }
+//     );
+//     const data = await response.json();
+//     if (!response.ok) {
+//       throw new Error(data.error);
+//     }
+//     return data;
+//   } catch (error) {
+//     return error;
+//   }
+// };
+
 export const searchUsers = async (searchValue) => {
   const token = localStorage.getItem("accessJWT");
   try {

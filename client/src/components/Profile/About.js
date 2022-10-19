@@ -1,10 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
+// import Form from "react-bootstrap/Form";
+// import Button from "react-bootstrap/Button";
+import { useSelector, useDispatch } from "react-redux";
+import LoadingSpinner from "../UI/LoadingSpinner";
+// import { commentToAbout } from "../../lib/userApi";
 import { format } from "timeago.js";
 
 const About = ({ currentUserProfile, userprofilePicture, updateTime }) => {
+  // const [about, setAbout] = useState("");
+  const { requestSuccess, requestLoading } = useSelector(
+    (state) => state.request
+  );
+  // const handleAboutChangeHandler = (event) => {
+  //   setAbout(event.target.value);
+  // };
+
+  // const onPostComment = async (event) => {
+  //   event.preventDefault();
+  //   const response = await commentToAbout(currentUserProfile.username, about);
+  //   console.log(response);
+  // };
+
   return (
     <>
       {!currentUserProfile.about && <div></div>}
+      {requestLoading && <LoadingSpinner />}
       {currentUserProfile.about && (
         <div>
           {/* // POST */}
@@ -36,39 +56,33 @@ const About = ({ currentUserProfile, userprofilePicture, updateTime }) => {
             {/* POST CONTENT */}
             <div className="text-justify px-4" style={{ marginLeft: "50px" }}>
               <p>{currentUserProfile.about}</p>
+              {/* <div>
+                <button>
+                  <strong>Like</strong>
+                </button>
+              </div> */}
             </div>
-            {/* END POST CONTENT */}
-            {/* POST EVENTS */}
-            <div className="px-4 py-2">
-              <div className="flex items-center justify-between">
-                <div className="flex flex-row-reverse items-center">
-                  <span
-                    onClick=""
-                    style={{ cursor: "pointer", marginLeft: "45px" }}
-                  >
-                    10 comments
-                  </span>
-                </div>
-              </div>
-            </div>
-            {/* END POST EVENTS */}
 
-            {/* POST ACTION */}
-            <div className="py-2 px-4">
+            <div className="py-4 px-4">
               <div className="border border-gray-200 border-l-0 border-r-0 py-1">
-                <div className="flex space-x-2">
-                  <div className="w-1/3 flex space-x-2 justify-center items-center hover:bg-gray-100 text-xl py-2 rounded-lg cursor-pointer text-gray-500">
-                    <i className="bx bx-like"></i>
-                    <span className="text-sm font-semibold">Like</span>
-                  </div>
-                  <div className="w-1/3 flex space-x-2 justify-center items-center hover:bg-gray-100 text-xl py-2 rounded-lg cursor-pointer text-gray-500">
-                    <i className="bx bx-comment"></i>
-                    <span className="text-sm font-semibold">Comment</span>
-                  </div>
-                  <div className="w-1/3 flex space-x-2 justify-center items-center hover:bg-gray-100 text-xl py-2 rounded-lg cursor-pointer text-gray-500">
-                    <i className="bx bx-share bx-flip-horizontal"></i>
-                    <span className="text-sm font-semibold">Share</span>
-                  </div>
+                <div>
+                  {/* <Form>
+                    <Form.Group
+                      className="mb-3"
+                      controlId="exampleForm.ControlTextarea1"
+                    >
+                      <Form.Control
+                        onChange={handleAboutChangeHandler}
+                        value={about}
+                        as="textarea"
+                        rows={3}
+                        placeholder="Post a comment"
+                      />
+                    </Form.Group>
+                    <Button type="submit" onClick={onPostComment}>
+                      Submit
+                    </Button>
+                  </Form> */}
                 </div>
               </div>
             </div>
