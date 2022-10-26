@@ -4,7 +4,10 @@ const roomSchema = new Schema({
   topic: String,
   description: String,
   imgpath: String,
-  type: String,
+  type: {
+    type: String,
+    default: "public",
+  },
   Chat: [
     {
       type: mongoose.Schema.Types.ObjectId,
