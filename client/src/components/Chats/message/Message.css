@@ -25,9 +25,16 @@
   max-width: 300px;
 }
 
+
+
+.ownMessageBottom {
+  font-size: 12px;
+  margin-right: 56px;
+}
+
 .messageBottom {
   font-size: 12px;
-  /* margin-top: 10px; */
+  margin-left: 45px;
 }
 
 .message.own {
@@ -37,4 +44,5 @@
 .message.own .messageText {
   background-color: rgb(248, 229, 229);
   color: black;
+  margin-right: 10px;
 }

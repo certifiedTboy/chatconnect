@@ -34,7 +34,7 @@ const RoomsLists = (props) => {
       <div key={room._id} className="col-lg-4 mb-4 cardy col-sm-6 col-lg-4">
         <div className="centered2">{loadingRoom && <LoadingSpinner />}</div>
         <div className="card" style={{ width: 250 }}>
-          <img src="" className="card-img-top" alt="..." />
+          <img src={room.imgpath} className="card-img-top" alt="..." />
           <div className="card-body">
             <div className="text-center">
               <h5 className="card-title">

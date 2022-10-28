@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { Form } from "react-bootstrap";
+import { useSelector } from "react-redux";
 import Picker from "emoji-picker-react";
 import useSound from "use-sound";
 import messageSent from "../../../sounds/sentmessage.mp3";
@@ -10,11 +11,12 @@ import "./ChatForm.css";
 
 const ChatForm = (props) => {
   const [message, setMessage] = useState("");
-  const [showEmoji, setShowEmoji] = useState(false);
+  const [showEmoji, setShowEmoji] = useState(true);
   const focusInput = useRef();
   const [play] = useSound(messageSent);
   // const [play2] = useSound(messengerEffect);
   const [play3] = useSound(click);
+  const { user } = useSelector((state) => state.login);
 
   // get chat message input text area state
   const messageHandler = (event) => {
@@ -22,32 +24,27 @@ const ChatForm = (props) => {
     setMessage(text);
   };
 
-  // chat message submit form handler function
-  const onSubmitChat = (event) => {
-    event.preventDefault();
+  const SendMessageHandler = async (event) => {
+    if (event.key === "Enter") {
+      // check if chat input text area is empty
+      if (message.trim().length === 0) {
+        return;
+      }
 
-    // check if chat input text area is empty
-    if (message.trim().length === 0) {
-      return;
+      // creating an object data from chat input state and active current user
+      const data = {
+        message,
+        sender: user,
+      };
+      event.preventDefault();
+      play();
+      // send chat message
+      props.onSubmit(data);
+      focusInput.current.focus();
+
+      // set chatmessage text area to empty state after sending
+      setMessage("");
     }
-
-    // fetch current user from local storage
-    const user = localStorage.getItem("user");
-    const newUser = JSON.parse(user);
-
-    // creating an object data from chat input state and active current user
-    const data = {
-      message,
-      sender: newUser.C_U,
-    };
-
-    play();
-    // send chat message
-    props.onSubmit(data);
-    focusInput.current.focus();
-
-    // set chatmessage text area to empty state after sending
-    setMessage("");
   };
 
   // listening to typing event
@@ -68,7 +65,7 @@ const ChatForm = (props) => {
   // console.log(message);
   return (
     <div className="chatBoxBottom">
-      <Form onSubmit={onSubmitChat}>
+      <Form>
         <div>
           {showEmoji && (
             <Picker
@@ -78,17 +75,19 @@ const ChatForm = (props) => {
             />
           )}
           <div className="input_container">
-            <textarea
+            <input
+              type="text"
               ref={focusInput}
               placeholder="write something..."
               className="chatMessageInput"
               onChange={messageHandler}
               value={message}
               onKeyPress={typingOption}
+              onKeyDown={SendMessageHandler}
               onKeyUp={stopTypingOption}
-            ></textarea>
+            ></input>
             <img
-              src="https://cdn4.iconfinder.com/data/icons/36-slim-icons/87/calender.png"
+              src="https://t3.ftcdn.net/jpg/05/05/86/58/360_F_505865847_HAJ4BtMDxVYTKlveu5BDyljAym3ODnO8.jpg"
               className="input_img"
               onClick={() => {
                 if (showEmoji === true) {
@@ -99,9 +98,6 @@ const ChatForm = (props) => {
                 }
               }}
             />
-            <button type="submit" className="chatSubmitButton">
-              Send
-            </button>
           </div>
         </div>
       </Form>

@@ -120,15 +120,19 @@ const Profile = ({
                 {/* POST */}
                 {profileLoading === true && <LoadingSpinner />}
                 {aboutPage === true && (
-                  <About
-                    currentUserProfile={currentUserProfile}
-                    userprofilePicture={userprofilePicture}
-                    updateTime={updateTime}
-                  />
+                  <div>
+                    <About
+                      currentUserProfile={currentUserProfile}
+                      userprofilePicture={userprofilePicture}
+                      updateTime={updateTime}
+                    />
+                  </div>
                 )}
                 {friendsRequest === true && <RequestPage />}
                 {allFriends === true && (
-                  <FriendsPage friendsList={userFriendsList} />
+                  <div className="d-none d-sm-none d-md-block">
+                    <FriendsPage friendsList={userFriendsList} />
+                  </div>
                 )}
                 {/* END POST */}
               </div>

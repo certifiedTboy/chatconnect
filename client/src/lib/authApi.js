@@ -52,6 +52,8 @@ export const logoutUser = async () => {
     if (!response.ok) {
       return data;
     }
+    localStorage.removeItem("user");
+    localStorage.removeItem("accessJWT");
     return data;
   } catch (error) {
     return error;

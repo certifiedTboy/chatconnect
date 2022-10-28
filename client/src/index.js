@@ -11,7 +11,9 @@ ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
       {" "}
-      <App />{" "}
+      <div>
+        <App />{" "}
+      </div>
     </BrowserRouter>
   </Provider>,
   document.getElementById("root")

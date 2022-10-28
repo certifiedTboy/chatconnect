@@ -7,26 +7,43 @@ const Message = ({ id, own, sender, message, time, image }) => {
   // console.log(id, own, sender, message, time, image);
   return (
     <Fragment>
-      {" "}
       <div key={id}>
-        <div className={own ? "message own" : "message"}>
-          <div className="messageTop">
-            <NavLink to={`/user/userprofile/${sender}`}>
-              {" "}
-              <img
-                className="messageImg"
-                src={`http://localhost:3001/${image}`}
-              />{" "}
-            </NavLink>
+        {own && (
+          <div className="message own">
+            <div className="messageTop">
+              <p className="messageText">{message}</p>
 
-            <p className="messageText">
-              <NavLink to={`/user/userprofile/${sender}`}></NavLink>{" "}
-              <span style={{ fontWeight: 700 }}>{sender}: </span>
-              {message}
-            </p>
+              <NavLink to={`/user/userprofile/${sender}`}>
+                <img
+                  className="messageImg"
+                  src={`http://localhost:3001/${image}`}
+                />
+              </NavLink>
+            </div>
+            <div className="ownMessageBottom">{format(time)}</div>
           </div>
-          <div className="messageBottom">{format(time)}</div>
-        </div>
+        )}
+
+        {!own && (
+          <div className="message">
+            <div className="messageTop">
+              <NavLink to={`/user/userprofile/${sender}`}>
+                <img
+                  className="messageImg"
+                  src={`http://localhost:3001/${image}`}
+                />
+              </NavLink>
+
+              <p className="messageText">
+                <NavLink to={`/user/userprofile/${sender}`}>
+                  <span style={{ fontWeight: 700 }}>{sender}: </span>
+                </NavLink>{" "}
+                {message}
+              </p>
+            </div>
+            <div className="messageBottom">{format(time)}</div>
+          </div>
+        )}
       </div>
     </Fragment>
   );

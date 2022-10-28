@@ -98,18 +98,16 @@ const Chat = () => {
     play2();
   }
 
-  console.log(socketRoomUsers);
-
   return (
     <div className="container-fluid">
-      <Row>
-        <Col lg={3}>
+      <div className="row">
+        <Col className="col-md-3 col-lg-3 col-3">
           <h3>{currentRoom}</h3>
           <div className="chatMenuWrapper">
             <Conversation users={socketRoomUsers || []} />
           </div>
         </Col>
-        <Col lg={6}>
+        <Col className="col-9 col-md-6 col-lg-6">
           <hr />
 
           <div>
@@ -134,7 +132,7 @@ const Chat = () => {
             <ChatForm onSubmit={sendHandler} onTyping={typingHandler} />
           </div>
         </Col>
-        <Col lg={3}>
+        <Col className="d-none d-sm-none d-md-block col-md-3 col-lg-3">
           <div className="chatOnline">
             <div className="chatOnlineWrapper">
               {filteredRoom.map((room) => (
@@ -143,13 +141,14 @@ const Chat = () => {
                     topic={room.topic}
                     description={room.description}
                     id={room._id}
+                    imgpath={room.imgpath}
                   />
                 </div>
               ))}
             </div>
           </div>
         </Col>
-      </Row>
+      </div>
     </div>
   );
 };
