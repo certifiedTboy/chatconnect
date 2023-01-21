@@ -1,6 +1,7 @@
 const Rooms = require("../models/rooms");
 const Chat = require("../models/chat");
 const User = require("../models/user");
+const { checkThatMessageIdExist, checkThatRoomExist } = require("../services/chatServices")
 
 // var rooms = [
 //   {
@@ -81,18 +82,7 @@ const User = require("../models/user");
 //   }
 // });
 
-exports.createRoom = async (req, res) => {
-  try {
-    const room = await Rooms.create(req.body);
-    if (!room) {
-      res.status(500).json({ message: "something went wrong" });
-    } else {
-      res.status(200).json({ message: "success" });
-    }
-  } catch (error) {
-    res.status(400).json({ message: "something went wrong" });
-  }
-};
+
 
 exports.getAllRooms = async (req, res) => {
   try {
@@ -100,25 +90,60 @@ exports.getAllRooms = async (req, res) => {
     if (!rooms) {
       res.json(404).json({ message: "No rooms found" });
     } else {
-      res.status(200).json(rooms);
+
+      const publicRooms = rooms.filter((room) => room.type === "public")
+      res.status(200).json(publicRooms);
     }
   } catch (error) {
     res.status(400).json({ message: "Something went wrong" });
   }
 };
 
+
 exports.getSingleRoom = async (req, res) => {
-  console.log(req.user.id);
+  const { topic } = req.params
+  const userId = req.user.id
+  try {
+    const existingRoom = await checkThatRoomExist(topic)
+    if (!existingRoom) {
+      const messageIdDoesExist = await checkThatMessageIdExist(topic, userId)
+      if (messageIdDoesExist) {
+        const roomData = {
+          topic,
+          description: "",
+          imgPath: "",
+          type: "private"
+        }
+        // const room = new Rooms(roomData);
+        // await room.save()
+        const room = await Rooms.create(roomData)
+
+        return res.status(200).json(room)
+
+      } else {
+        return res.status(400).json({ error: "something went wrong" })
+      }
+
+    } else {
+      return res.status(200).json(existingRoom)
+    }
+
+  } catch (error) {
+    console.log(error)
+  }
+};
+
+
+
+exports.getRoomData = async (req, res) => {
   try {
     const room = await Rooms.findOne({ topic: req.params.topic })
-      .populate("Chat")
-      .exec();
     if (!room) {
-      res.json(404).json({ message: "No rooms found" });
+      return res.json(404).json({ error: "No rooms found" });
     } else {
-      res.status(200).json(room);
+      return res.status(200).json(room);
     }
   } catch (error) {
-    res.status(400).json({ message: "Something went wrong" });
+    return res.status(400).json({ error: "Something went wrong" });
   }
 };

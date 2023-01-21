@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Container, Row, Form, Col } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { uploadImage } from "../lib/userApi";
@@ -16,6 +16,7 @@ const ProfileUpload = () => {
   const onSelectImage = (e) => {
     setImage(e.target.files[0]);
   };
+
 
   const onUploadImage = async () => {
     setIsLoading(true);
@@ -63,7 +64,7 @@ const ProfileUpload = () => {
             <br /> <br />
           </label>
           <div style={{ margin: "0 auto" }}>
-            <div id="img-preview">{/* <img src={`${file}`} />; */}</div>
+            <div id="img-preview"><img src={`${image ? image.name : ""}`} alt="file to be uploaded" /></div>
           </div>
 
           <div className="file-upload-content">

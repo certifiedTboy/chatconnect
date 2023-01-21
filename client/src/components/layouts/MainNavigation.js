@@ -1,6 +1,6 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, Fragment, useCallback } from "react";
 import { searchUsers, getUserProfile } from "../../lib/userApi";
-import Button from "react-bootstrap/Button";
+// import Button from "react-bootstrap/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { onLogout } from "../Auth/loginSlice";
@@ -10,7 +10,7 @@ import { logoutUser } from "../../lib/authApi";
 import styles from "./MainNavigation.module.css";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
-import { showFriendsRequestPage } from "../Profile/profileActions";
+// import { showFriendsRequestPage } from "../Profile/profileActions";
 import {
   pendingRequest,
   successRequest,
@@ -37,7 +37,7 @@ const MainNavigation = () => {
   const dispatch = useDispatch();
 
   const onLogoutUser = async () => {
-    const response = await logoutUser();
+    await logoutUser();
   };
 
   // logout function
@@ -57,23 +57,41 @@ const MainNavigation = () => {
     setSearchUsersFailed("");
   };
 
+
+
   // search side effect handler
   useEffect(() => {
+    const onSearchUsers = async () => {
+      try {
+        const response = await searchUsers(searchdata);
+        if (!response || response.length === 0 || response.error) {
+          setSearchUsersFailed(response.error);
+        } else {
+          setSearchedUsers(response);
+        }
+      } catch (error) {
+        return error;
+      }
+    };
+
     const identifier = setTimeout(() => {
       onSearchUsers();
     }, 1000);
     return () => {
       clearTimeout(identifier);
     };
-  }, [searchdata, searchUsers]);
+  }, [searchdata]);
 
-  const getUserFriendsRequest = async () => {
+
+  const getUserFriendsRequest = useCallback(async () => {
     const profile = await getUserProfile(user);
     setProfilePicture(profile.profile.profilePicture);
     setFriendRequests(profile.request || []);
-  };
+  }, [user])
 
-  const onAcceptRequest = async (event) => {
+
+
+  const onAcceptRequest = useCallback(async (event) => {
     dispatch(pendingRequest());
     try {
       const response = await acceptRequest(event.target.value);
@@ -85,34 +103,23 @@ const MainNavigation = () => {
     } catch (error) {
       dispatch(failedRequest());
     }
-  };
+  }, [dispatch]);
 
-  const onRejectRequest = (event) => {
+  const onRejectRequest = useCallback((event) => {
     cancelRequest(event.target.value);
-  };
+  }, []);
 
   useEffect(() => {
     getUserFriendsRequest(user);
   }, [
     onAcceptRequest,
     onRejectRequest,
-    acceptRequest,
-    cancelRequest,
+    getUserFriendsRequest,
+    user,
     requestSuccess,
   ]);
 
-  const onSearchUsers = async () => {
-    try {
-      const response = await searchUsers(searchdata);
-      if (!response || response.length === 0 || response.error) {
-        setSearchUsersFailed(response.error);
-      } else {
-        setSearchedUsers(response);
-      }
-    } catch (error) {
-      return error;
-    }
-  };
+
 
   let searchResult = <div></div>;
 
@@ -127,10 +134,10 @@ const MainNavigation = () => {
         {user.profile ? (
           <img
             className={styles.searchImg}
-            src={`http://localhost:3001/${user.profile.profilePicture}`}
+            src={`http://localhost:3001/${profilePicture}`} alt="user profile pic"
           />
         ) : (
-          <img src="" />
+          <img src="" alt="user profile pic" />
         )}
 
         <span className={styles.searchName}>{user.username}</span>
@@ -168,7 +175,7 @@ const MainNavigation = () => {
 
                 <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
                   <div className="flex-shrink-0 flex items-center">
-                    <NavLink to={"/"} className="text-brand">
+                    <NavLink to={"/"} className="text-brand show">
                       {" "}
                       Chat <span className="color-b">Connect</span>
                     </NavLink>
@@ -356,6 +363,7 @@ const MainNavigation = () => {
                                   active ? "bg-gray-100" : "",
                                   "block px-4 py-2 text-sm text-gray-700"
                                 )}
+                                // href="/login"
                                 onClick={logOut}
                               >
                                 Sign out

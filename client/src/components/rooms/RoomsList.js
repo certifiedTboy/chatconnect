@@ -5,6 +5,8 @@ import LoadingSpinner from "../UI/LoadingSpinner";
 const RoomsLists = (props) => {
   const { rooms, newRoomError, loadingRoom } = props;
 
+  const publicRooms = rooms.filter((room) => room.type === "public")
+
   if (loadingRoom) {
     return (
       <div className="centered" style={{ marginTop: 300 }}>
@@ -29,7 +31,7 @@ const RoomsLists = (props) => {
     );
   }
 
-  const roomDetails = rooms.map((room) => {
+  const roomDetails = publicRooms.map((room) => {
     return (
       <div key={room._id} className="col-lg-4 mb-4 cardy col-sm-6 col-lg-4">
         <div className="centered2">{loadingRoom && <LoadingSpinner />}</div>

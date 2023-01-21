@@ -41,14 +41,11 @@ app.use("/", requestRoute);
 
 app.use(express.static(path.join(__dirname, "..", "public")));
 
-app.get("/*", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "public", "index.html"));
-});
 
 const startServer = async () => {
   await mongoConnect();
   server.listen(PORT, () =>
-    console.log(`Backend server is running on ${PORT}`)
+    console.log(`Backend server is running on port: ${PORT}`)
   );
 
   sockets.listen(io);

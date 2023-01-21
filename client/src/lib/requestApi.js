@@ -1,3 +1,6 @@
+const API_URL = "http://localhost:3001"
+// const API_URL = "https://chatconnect-backend-production.up.railway.app"
+
 export const sendRequest = async (receiverUsername) => {
   const token = localStorage.getItem("accessJWT");
   const user = localStorage.getItem("user");
@@ -9,7 +12,7 @@ export const sendRequest = async (receiverUsername) => {
     senderUsername,
     receiverUsername,
   };
-  const response = await fetch(`http://localhost:3001/user/requests`, {
+  const response = await fetch(`${API_URL}/user/requests`, {
     method: "POST",
     body: JSON.stringify(data),
     headers: {
@@ -34,7 +37,7 @@ export const sendRequest = async (receiverUsername) => {
 export const getAllUsers = async () => {
   const token = localStorage.getItem("accessJWT");
   try {
-    const response = await fetch("http://localhost:3001/users", {
+    const response = await fetch(`${API_URL}/users`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -63,7 +66,7 @@ export const acceptRequest = async (requestSenderName) => {
   };
 
   const response = await fetch(
-    `http://localhost:3001/user/requests/acceptrequest`,
+    `${API_URL}/user/requests/acceptrequest`,
     {
       method: "POST",
       body: JSON.stringify(data),
@@ -97,10 +100,8 @@ export const cancelRequest = async (requestSenderName) => {
     requestSenderName,
   };
 
-  console.log(data);
-
   const response = await fetch(
-    `http://localhost:3001/user/requests/cancelrequest`,
+    `${API_URL}/user/requests/cancelrequest`,
     {
       method: "POST",
       body: JSON.stringify(data),
@@ -135,7 +136,7 @@ export const removeFriend = async (friendUsername) => {
   };
 
   const response = await fetch(
-    `http://localhost:3001/user/requests/removefriend`,
+    `${API_URL}/user/requests/removefriend`,
     {
       method: "POST",
       body: JSON.stringify(data),
@@ -164,7 +165,7 @@ export const getAllUserFriends = async () => {
   const user = localStorage.getItem("user");
   const username = JSON.parse(user);
   const response = await fetch(
-    `http://localhost:3001/user/request/${username.C_U}/allFriends`,
+    `${API_URL}/user/request/${username.C_U}/allFriends`,
     {
       method: "GET",
       headers: {
@@ -190,7 +191,7 @@ export const getUserSentRequest = async (username) => {
   const token = localStorage.getItem("accessJWT");
 
   const response = await fetch(
-    `http://localhost:3001/user/request/${username}/sentrequests`,
+    `${API_URL}/user/request/${username}/sentrequests`,
     {
       method: "GET",
       headers: {
@@ -216,7 +217,7 @@ export const getUserRequests = async (username) => {
   const token = localStorage.getItem("accessJWT");
 
   const response = await fetch(
-    `http://localhost:3001/user/request/${username}/requests`,
+    `${API_URL}/user/request/${username}/requests`,
     {
       method: "GET",
       headers: {

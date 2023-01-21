@@ -1,156 +1,68 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Col, Row } from "react-bootstrap";
-import ScrollToBottom from "react-scroll-to-bottom";
-import { useSelector } from "react-redux";
-import useSound from "use-sound";
-import ebuddy from "../sounds/ebuddy.mp3";
-import { fetchRoomByTopic, fetchRooms } from "../lib/roomApi";
-import ChatForm from "../components/Chats/chatform/ChatForm";
-import { useParams, useNavigate } from "react-router-dom";
-import Conversation from "../components/Chats/Conversations/Conversation";
-import Message from "../components/Chats/message/Message";
-import ChatOnline from "../components/Chats/chatOnline/ChatOnline";
-import { io } from "socket.io-client";
-import messengerEffect from "../sounds/messenger.mp3";
+import React, { useState, useEffect, useCallback } from "react";
+import { fetchRoomByTopic } from "../lib/roomApi";
+import { useParams } from "react-router-dom";
+import Chat from "../components/Chats/Chat";
+import LoadingSpinner from "../components/UI/LoadingSpinner";
 import "./Chat.css";
 
-const Chat = () => {
-  const socket = useRef(io("http://localhost:3001"));
-  const { user } = useSelector((state) => state.login);
-  const [currentRoom, setCurrentRoom] = useState("");
-  const [roomChats, setRoomChats] = useState([]);
-  const [socketRoomUsers, setSocketRoomUsers] = useState([]);
-  const [socketMessage, setSocketMessage] = useState([]);
-  const [filteredRoom, setFilteredRoom] = useState([]);
-  const [typing, setIsTyping] = useState(false);
-  const navigate = useNavigate();
-  const [play2] = useSound(messengerEffect);
-  const [play] = useSound(ebuddy);
+const ChatPage = () => {
 
+  const [isLoading, setIsLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
+  const [chatMessages, setChatMessages] = useState([])
+  const [roomTopic, setRoomTopic] = useState("")
   // extract room topic parameter from URL
   const params = useParams();
   const { topic } = params;
 
-  useEffect(() => {
-    // emit notification to room and other users when a new user joins room
-    socket?.current.emit("joinRoom", {
-      username: user,
-      room: topic,
-    });
 
-    //emit general messages to room and other users
-    socket?.current.on("message", (message) => {
-      play();
-      setSocketMessage((list) => [...list, message]);
-    });
-
-    //emit active room users to other users
-    socket?.current.on("roomUsers", ({ room, users, usersProfile }) => {
-      setCurrentRoom(room);
-      let currentRoomUsers = usersProfile.filter((userProfile) =>
-        users.some((user) => userProfile.user.username === user.username)
-      );
-      setSocketRoomUsers(currentRoomUsers);
-    });
-  }, [socket, topic]);
-
-  //send user typing notification to socket server
-  useEffect(() => {
-    socket?.current.on("typing", (data) => {
-      setIsTyping(data);
-    });
-  }, []);
-
-  // sending chats to socket server function
-  const sendHandler = async (data) => {
-    await socket.current.emit("chatMessage", data);
-  };
+  const getRoomData = useCallback(async () => {
+    setIsLoading(true)
+    try {
+      const response = await fetchRoomByTopic(topic)
+      if (response.error) {
+        setIsLoading(false)
+        setErrorMessage(response.error)
+      } else {
+        setIsLoading(false)
+        setChatMessages(response.Chat)
+        setRoomTopic(response.topic)
+      }
+    } catch (error) {
+      setIsLoading(false)
+      setErrorMessage("something went wrong")
+    }
+  }, [topic])
 
   useEffect(() => {
-    const fetchIdRoom = async () => {
-      const allRooms = await fetchRooms();
-      const roomData = await fetchRoomByTopic(topic);
-      setRoomChats(roomData.Chat);
-      const newRoom = allRooms.filter((room) => room.topic !== roomData.topic);
-      setFilteredRoom(newRoom);
-    };
-
-    fetchIdRoom();
-  }, []);
-
-  const typingHandler = async (data) => {
-    if (data.key != "Enter") {
-      socket.current.emit("typing", {
-        user: user,
-        typing: true,
-      });
+    const getRoomDataByTopic = async () => {
+      await getRoomData()
     }
 
-    if (data.trim().length === 0 || data === "stopTyping") {
-      socket.current.emit("typing", {
-        user: "",
-        typing: false,
-      });
-    }
-  };
+    getRoomDataByTopic()
+  }, []);
 
-  if (typing.typing === true) {
-    play2();
+  if (isLoading) {
+    return (
+      <div className="centered" style={{ marginTop: 300 }}>
+        <LoadingSpinner />
+      </div>
+    );
   }
 
-  return (
-    <div className="container-fluid">
-      <div className="row">
-        <Col className="col-md-3 col-lg-3 col-3">
-          <h3>{currentRoom}</h3>
-          <div className="chatMenuWrapper">
-            <Conversation users={socketRoomUsers || []} />
-          </div>
-        </Col>
-        <Col className="col-9 col-md-6 col-lg-6">
-          <hr />
-
-          <div>
-            <ScrollToBottom className="chatBoxTop">
-              {socketMessage.map((chat) => (
-                <Message
-                  id={chat._id}
-                  own={chat.sender === user}
-                  sender={chat.sender}
-                  message={chat.message}
-                  time={chat.createdAt}
-                  image={chat.userImage || ""}
-                />
-              ))}
-            </ScrollToBottom>
-            {typing.typing === true && (
-              <div>
-                <p className="typing">{typing.user} is typing ...</p>
-              </div>
-            )}
-
-            <ChatForm onSubmit={sendHandler} onTyping={typingHandler} />
-          </div>
-        </Col>
-        <Col className="d-none d-sm-none d-md-block col-md-3 col-lg-3">
-          <div className="chatOnline">
-            <div className="chatOnlineWrapper">
-              {filteredRoom.map((room) => (
-                <div>
-                  <ChatOnline
-                    topic={room.topic}
-                    description={room.description}
-                    id={room._id}
-                    imgpath={room.imgpath}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        </Col>
+  if (errorMessage) {
+    return (
+      <div className="centered" style={{ marginTop: 300 }}>
+        <p>Something Went Wrong</p>
       </div>
-    </div>
+    );
+  }
+  return (<div>
+
+    {roomTopic && chatMessages && !isLoading && !errorMessage && <Chat chatMessages={chatMessages} roomTopic={roomTopic} />}
+  </div>
+
   );
 };
 
-export default Chat;
+export default ChatPage;

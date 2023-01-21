@@ -1,7 +1,10 @@
+const API_URL = "http://localhost:3001"
+// const API_URL = "https://chatconnect-backend-production.up.railway.app"
+
 export const fetchRooms = async () => {
   const token = localStorage.getItem("accessJWT");
   try {
-    const response = await fetch("http://localhost:3001/rooms", {
+    const response = await fetch(`${API_URL}/rooms`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -23,7 +26,7 @@ export const fetchRooms = async () => {
 export const fetchRoomByTopic = async (topic) => {
   const token = localStorage.getItem("accessJWT");
   try {
-    const response = await fetch(`http://localhost:3001/rooms/${topic}`, {
+    const response = await fetch(`${API_URL}/rooms/${topic}`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -33,7 +36,8 @@ export const fetchRoomByTopic = async (topic) => {
     });
 
     if (!response.ok) {
-      return response.message;
+
+      return response.error;
     }
     const data = await response.json();
     return data;
@@ -41,3 +45,29 @@ export const fetchRoomByTopic = async (topic) => {
     return error;
   }
 };
+
+
+export const fetchRoomData = async (topic) => {
+  const token = localStorage.getItem("accessJWT");
+  try {
+    const response = await fetch(`${API_URL}/room/room-data/${topic}`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "auth-token": `${token}`,
+      },
+    });
+
+    if (!response.ok) {
+
+      return response.error;
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return error;
+  }
+};
+
+

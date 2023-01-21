@@ -1,6 +1,9 @@
+const API_URL = "http://localhost:3001"
+// const API_URL = "https://chatconnect-backend-production.up.railway.app"
+
 // user login API
 export const userLogin = async (data) => {
-  const response = await fetch("http://localhost:3001/signin", {
+  const response = await fetch(`${API_URL}/signin`, {
     method: "POST",
     body: JSON.stringify(data),
     headers: {
@@ -25,7 +28,7 @@ export const userLogin = async (data) => {
 //userRegisteration API
 export const userRegisteration = async (userData) => {
   try {
-    const response = await fetch("http://localhost:3001/signup", {
+    const response = await fetch(`${API_URL}/signup`, {
       method: "POST",
       body: JSON.stringify(userData),
       headers: {
@@ -45,7 +48,7 @@ export const userRegisteration = async (userData) => {
 //User Logout Api
 export const logoutUser = async () => {
   try {
-    const response = await fetch("http://localhost:3001/signout", {
+    const response = await fetch(`${API_URL}/signout`, {
       method: "GET",
     });
     const data = await response.json();

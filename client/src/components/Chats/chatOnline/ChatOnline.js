@@ -4,10 +4,10 @@ const ChatOnline = (props) => {
   const { topic, description, id, imgpath } = props;
 
   return (
-    <div className="chatOnline" key={id}>
+    <div className="chatOnline show" key={id}>
       <div className="chatOnlineFriend">
         <div className="chatOnlineImgContainer">
-          <img className="chatOnlineImg" src={imgpath} />
+          <img className="chatOnlineImg" src={imgpath} alt="room profile" />
           <div className="chatOlineBadge"> </div>
         </div>
         <span className="chatOnlineName">

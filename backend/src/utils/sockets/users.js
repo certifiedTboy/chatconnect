@@ -1,10 +1,13 @@
 const User = require("../../models/user");
 const Profile = require("../../models/profile");
+const Rooms = require("../../models/rooms")
+const Chat = require("../../models/chat")
+
 const users = [];
 
 // Join user to chat
-function userJoin(id, username, room) {
-  const user = { id, username, room };
+function userJoin(id, username, room, roomType) {
+  const user = { id, username, room, roomType };
 
   users.push(user);
 
@@ -37,6 +40,24 @@ const getUserProfilePicture = async (currentUserName) => {
   return response.profile;
 };
 
+
+const checkThatRoomExist = async (topic) => {
+  try {
+    const room = await Rooms.findOne({ topic })
+    if (room) {
+      return room
+    } else {
+      return ({ message: "invalid messaging id" })
+    }
+  } catch (error) {
+
+  }
+}
+
+
+
+
+
 const getAllUsersProfile = async (currentUserName) => {
   const response = await Profile.find({});
   return response;
@@ -49,4 +70,5 @@ module.exports = {
   getRoomUsers,
   getUserProfilePicture,
   getAllUsersProfile,
+  checkThatRoomExist
 };

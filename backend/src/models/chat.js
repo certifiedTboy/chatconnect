@@ -7,7 +7,7 @@ const chatSchema = new Schema({
     default: Date.now,
   },
   message: String,
-  sender: String,
+  sender: String
 });
 
 let Chat = mongoose.model("Chat", chatSchema);

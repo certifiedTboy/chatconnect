@@ -46,7 +46,7 @@ exports.signup = async (req, res) => {
   }
 };
 
-// User signin controller function
+// User signin controller function 
 exports.signin = async (req, res) => {
   const { username, password } = req.body;
   try {

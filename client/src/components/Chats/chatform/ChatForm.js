@@ -18,14 +18,28 @@ const ChatForm = (props) => {
   const [play3] = useSound(click);
   const { user } = useSelector((state) => state.login);
 
+
+
+  // listening to typing event
+  const typingOption = (event) => {
+    props.onTyping(event.key);
+  };
+
+  // listenening to stop typing event
+  const stopTypingOption = () => {
+    props.onTyping(`stopTyping`);
+  };
+
+
+
   // get chat message input text area state
   const messageHandler = (event) => {
-    const text = event.target.value;
-    setMessage(text);
+    setMessage(event.target.value);
   };
 
   const SendMessageHandler = async (event) => {
-    if (event.key === "Enter") {
+    event.preventDefault();
+    if (event.type === "submit") {
       // check if chat input text area is empty
       if (message.trim().length === 0) {
         return;
@@ -36,7 +50,7 @@ const ChatForm = (props) => {
         message,
         sender: user,
       };
-      event.preventDefault();
+
       play();
       // send chat message
       props.onSubmit(data);
@@ -47,15 +61,6 @@ const ChatForm = (props) => {
     }
   };
 
-  // listening to typing event
-  const typingOption = (event) => {
-    props.onTyping(event.target.value);
-  };
-
-  // listenening to stop typing event
-  const stopTypingOption = () => {
-    props.onTyping(`stopTyping`);
-  };
 
   const onEmojiClick = (event, emojiObject) => {
     play3();
@@ -65,7 +70,7 @@ const ChatForm = (props) => {
   // console.log(message);
   return (
     <div className="chatBoxBottom">
-      <Form>
+      <Form onSubmit={SendMessageHandler}>
         <div>
           {showEmoji && (
             <Picker
@@ -83,7 +88,7 @@ const ChatForm = (props) => {
               onChange={messageHandler}
               value={message}
               onKeyPress={typingOption}
-              onKeyDown={SendMessageHandler}
+              // onKeyDown={SendMessageHandler}
               onKeyUp={stopTypingOption}
             ></input>
             <img
@@ -97,7 +102,7 @@ const ChatForm = (props) => {
                   setShowEmoji(true);
                 }
               }}
-            />
+              alt="emoji icon" />
           </div>
         </div>
       </Form>

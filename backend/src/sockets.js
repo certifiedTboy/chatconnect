@@ -5,6 +5,7 @@ const {
   getRoomUsers,
   getUserProfilePicture,
   getAllUsersProfile,
+  checkThatRoomExist
 } = require("./utils/sockets/users");
 const {
   generalMessageFormat,
@@ -21,26 +22,39 @@ const listen = (io) => {
   // Run when client connects
   io.on("connection", (socket) => {
     socket.on("joinRoom", async ({ username, room }) => {
-      const user = userJoin(socket.id, username, room);
-
+      const roomExist = await checkThatRoomExist(room)
+      const user = userJoin(socket.id, username, room, roomExist.type);
       socket.join(user.room);
 
-      // Welcome current user
-      socket.emit(
-        "message",
-        generalMessageFormat(
-          botName,
-          `Welcome to ${user.room} Room, where you discuss about ${user.room} issues!`
-        )
-      );
-
-      // Broadcast to other room users when a user connects
-      socket.broadcast
-        .to(user.room)
-        .emit(
+      if (user.roomType === "public") {
+        // Welcome current user
+        socket.emit(
           "message",
-          generalMessageFormat(botName, `${user.username} has joined the chat`)
+          generalMessageFormat(
+            botName,
+            `Welcome to ${user.room} Room, where you discuss about ${user.room} issues!`
+          )
+
         );
+
+        // Broadcast to other room users when a user connects
+        socket.broadcast
+          .to(user.room)
+          .emit(
+            "message",
+            generalMessageFormat(botName, `${user.username} has joined the chat`)
+          );
+
+      } else {
+        // Broadcast to other room users when a user connects
+        socket.broadcast
+          .to(user.room)
+          .emit(
+            "message",
+            generalMessageFormat(botName, `${user.username} is online`)
+          );
+      }
+
 
       // Send users and room info to client
 
@@ -62,45 +76,68 @@ const listen = (io) => {
         "message",
         userMessageFormat(msg.sender, msg.message, userImage)
       );
-      // dbconnection.then((db) => {
-      //   let chatMessage = new Chat({
-      //     message: msg.message,
-      //     sender: msg.sender,
-      //   });
-      //   chatMessage.save();
-      //   Room.findOne({ topic: user.room }, (err, rooms) => {
-      //     rooms.Chat.push(chatMessage);
-      //     rooms.save();
-      //   });
-      // });
+
+      if (user.roomType === "private") {
+        // save chatmessage to database
+        let chatMessage = new Chat({
+          message: msg.message,
+          sender: msg.sender
+        });
+        await chatMessage.save();
+        const currentRoom = await Room.findOne({ topic: user.room })
+        currentRoom.Chat.push(chatMessage)
+        await currentRoom.save()
+
+      } 
+
     });
 
     // user typing
     socket.on("typing", (data) => {
       const user = getCurrentUser(socket.id);
-      if (data.typing === true)
+      if (data.typing) {
+        return socket.broadcast.to(user.room).emit("typing", data);
+      } else {
         socket.broadcast.to(user.room).emit("typing", data);
-      else socket.broadcast.to(user.room).emit("typing", data);
+      }
+
     });
+
 
     // Runs when client disconnects
     socket.on("disconnect", async () => {
       const user = userLeave(socket.id);
-
       if (user) {
-        socket.broadcast
-          .to(user.room)
-          .emit(
-            "message",
-            generalMessageFormat(botName, `${user.username} has left the chat`)
-          );
+        if (user.roomType === "public") {
+          socket.broadcast
+            .to(user.room)
+            .emit(
+              "message",
+              generalMessageFormat(botName, `${user.username} has left the chat`)
+            );
 
-        // Send users and room info
-        io.to(user.room).emit("roomUsers", {
-          room: user.room,
-          users: getRoomUsers(user.room),
-          profile: await getAllUsersProfile(),
-        });
+          // Send users and room info
+          io.to(user.room).emit("roomUsers", {
+            room: user.room,
+            users: getRoomUsers(user.room),
+            profile: await getAllUsersProfile(),
+          });
+        } else {
+          socket.broadcast
+            .to(user.room)
+            .emit(
+              "message",
+              generalMessageFormat(botName, `${user.username} is offline`)
+            );
+
+          // Send users and room info
+          io.to(user.room).emit("roomUsers", {
+            room: user.room,
+            users: getRoomUsers(user.room),
+            profile: await getAllUsersProfile(),
+          });
+        }
+
       }
     });
   });

@@ -25,7 +25,7 @@ const Conversation = ({ users }) => {
   }, [userSearchData, users]);
 
   return (
-    <>
+    <div className="show">
       <input
         className="chatMenuInput"
         placeholder="Search active room users..."
@@ -37,10 +37,10 @@ const Conversation = ({ users }) => {
             {user.profilePicture ? (
               <img
                 className="conversationImg"
-                src={`http://localhost:3001/${user.profilePicture}`}
+                src={`http://localhost:3001/${user.profilePicture}`} alt="profile of user"
               />
             ) : (
-              <img src="" />
+              <img src="" alt="profile of user" />
             )}
             <NavLink to={`/user/userprofile/${user.user.username}`}>
               {" "}
@@ -49,7 +49,7 @@ const Conversation = ({ users }) => {
           </div>
         );
       })}
-    </>
+    </div>
   );
 };
 
