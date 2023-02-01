@@ -1,10 +1,10 @@
 import "./Message.css";
-import { format } from "timeago.js";
+import Moment from 'react-moment';
 import { NavLink } from "react-router-dom";
 import { Fragment } from "react";
 
 const Message = ({ id, own, sender, message, time, image }) => {
-  // console.log(id, own, sender, message, time, image);
+
   return (
     <Fragment>
       <div key={id}>
@@ -17,10 +17,10 @@ const Message = ({ id, own, sender, message, time, image }) => {
                 <img
                   className="messageImg"
                   src={`http://localhost:3001/${image}`}
-                />
+                  alt="profile img" />
               </NavLink>
             </div>
-            <div className="ownMessageBottom">{format(time)}</div>
+            <Moment fromNow>{time}</Moment>
           </div>
         )}
 
@@ -31,7 +31,7 @@ const Message = ({ id, own, sender, message, time, image }) => {
                 <img
                   className="messageImg"
                   src={`http://localhost:3001/${image}`}
-                />
+                  alt="profile img" />
               </NavLink>
 
               <p className="messageText">
@@ -41,7 +41,7 @@ const Message = ({ id, own, sender, message, time, image }) => {
                 {message}
               </p>
             </div>
-            <div className="messageBottom">{format(time)}</div>
+            <Moment fromNow>{time}</Moment>
           </div>
         )}
       </div>

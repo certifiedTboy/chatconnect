@@ -17,7 +17,7 @@ import {
 } from "./requestRedux/requestSlice";
 import { showAboutPage, loadingPage } from "./profileActions";
 import Button from "react-bootstrap/Button";
-import { Link, useParams } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 
 const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
   const dispatch = useDispatch();
@@ -30,6 +30,7 @@ const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
   const [friendIsPending, setFriendIsPending] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [userAlreadySentRequest, setUserAlreadySentRequest] = useState(false);
+  const [userMessagingId, setUserMessagingId] = useState("")
   const { requestSuccess } = useSelector((state) => state.request);
 
   const onShowModal = () => {
@@ -78,6 +79,8 @@ const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
 
   const onGetUserFriends = async () => {
     const friends = await getAllUserFriends();
+    const currentFriendProfile = friends.find((friend) => friend.username === currentUserProfile.username)
+    setUserMessagingId(currentFriendProfile.messagingId)
     const userIsFriend = friends.find(
       (friend) => friend.username === currentUserProfile.username
     );
@@ -86,6 +89,9 @@ const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
       setFriendIsPending(false);
     }
   };
+
+
+  console.log(userMessagingId)
 
   const onGetSentRequest = async () => {
     const sentRequest = await getUserSentRequest(user);
@@ -158,7 +164,7 @@ const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
       if (response) {
         dispatch(showAboutPage());
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const handleMouseOver = async () => {
@@ -200,7 +206,11 @@ const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
 
   const sendMessageLink = (
     <li className="px-3 d-inline font-semibold text-gray-600">
-      <a href="#">Send Message</a>{" "}
+      {/* <a href="#">Send Message</a>{" "} */}
+      <NavLink className="btn btn-success" to={`/rooms/`}>
+        {" "}
+        Send Message{" "}
+      </NavLink>
     </li>
   );
 

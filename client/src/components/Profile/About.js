@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-// import Form from "react-bootstrap/Form";
-// import Button from "react-bootstrap/Button";
 import { useSelector, useDispatch } from "react-redux";
+import Moment from 'react-moment';
 import LoadingSpinner from "../UI/LoadingSpinner";
-// import { commentToAbout } from "../../lib/userApi";
-import { format } from "timeago.js";
+
 
 const About = ({ currentUserProfile, userprofilePicture, updateTime }) => {
   // const [about, setAbout] = useState("");
@@ -35,7 +33,7 @@ const About = ({ currentUserProfile, userprofilePicture, updateTime }) => {
                 <div className="relative">
                   <img
                     src={`http://localhost:3001/${userprofilePicture}`}
-                    alt="Profile picture"
+                    alt="Profile pict"
                     className="w-10 h-10 rounded-full"
                   />
                   <span className="bg-green-500 w-3 h-3 rounded-full absolute right-0 top-3/4 border-white border-2"></span>
@@ -43,7 +41,7 @@ const About = ({ currentUserProfile, userprofilePicture, updateTime }) => {
                 <div>
                   <div className="font-semibold">{currentUserProfile.name}</div>
                   <span className="text-sm text-gray-500">
-                    {format(updateTime)}
+                    <Moment fromNow>{updateTime}</Moment>
                   </span>
                 </div>
               </div>

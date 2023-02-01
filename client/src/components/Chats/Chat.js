@@ -140,7 +140,7 @@ const Chat = ({ chatMessages, roomTopic }) => {
                                     own={chat.sender === user}
                                     sender={chat.sender}
                                     message={chat.message}
-                                    time={chat.createdAt}
+                                    time={chat.createdAt || new Date()}
                                     image={chat.userImage || ""}
                                 />
                             ))}
