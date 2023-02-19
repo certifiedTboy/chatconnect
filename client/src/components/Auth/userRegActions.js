@@ -14,6 +14,6 @@ export const newUserRegisteration = (frmDt) => async (dispatch) => {
       ? dispatch(registerationSuccess(result.message))
       : dispatch(registerationFail(result.message));
   } catch (error) {
-    dispatch(registerationFail(error.message));
+    dispatch(registerationFail("Server Error"));
   }
 };

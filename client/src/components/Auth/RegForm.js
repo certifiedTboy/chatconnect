@@ -19,6 +19,7 @@ const RegForm = () => {
   const { isLoading, status, errorMessage } = useSelector(
     (state) => state.registeration
   );
+
   const usernameHandler = (event) => {
     setUsername(event.target.value);
   };

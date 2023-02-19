@@ -67,6 +67,7 @@ const MainNavigation = () => {
         if (!response || response.length === 0 || response.error) {
           setSearchUsersFailed(response.error);
         } else {
+
           setSearchedUsers(response);
         }
       } catch (error) {
@@ -134,7 +135,7 @@ const MainNavigation = () => {
         {user.profile ? (
           <img
             className={styles.searchImg}
-            src={`http://localhost:3001/${profilePicture}`} alt="user profile pic"
+            src={`http://localhost:3001/${user.profile.profilePicture}`} alt="user profile pic"
           />
         ) : (
           <img src="" alt="user profile pic" />

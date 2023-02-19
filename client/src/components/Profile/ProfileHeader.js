@@ -91,7 +91,7 @@ const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
   };
 
 
-  console.log(userMessagingId)
+
 
   const onGetSentRequest = async () => {
     const sentRequest = await getUserSentRequest(user);
@@ -207,9 +207,10 @@ const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
   const sendMessageLink = (
     <li className="px-3 d-inline font-semibold text-gray-600">
       {/* <a href="#">Send Message</a>{" "} */}
-      <NavLink className="btn btn-success" to={`/rooms/`}>
+
+      <NavLink className="text-center text-blue-700 font-semibold" to={`/rooms/${userMessagingId}`}>
         {" "}
-        Send Message{" "}
+        Message
       </NavLink>
     </li>
   );

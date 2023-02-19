@@ -1,7 +1,9 @@
 const Rooms = require("../models/rooms");
 const Chat = require("../models/chat");
 const User = require("../models/user");
-const { checkThatMessageIdExist, checkThatRoomExist } = require("../services/chatServices")
+const { checkThatMessageIdExist, checkThatRoomExist, getCurrentUserProfilePicture, getOtherUserProfilePicture } = require("../services/chatServices")
+const { getUserProfilePicture } = require("../utils/sockets/users")
+
 
 // var rooms = [
 //   {
@@ -105,6 +107,7 @@ exports.getSingleRoom = async (req, res) => {
   const userId = req.user.id
   try {
     const existingRoom = await checkThatRoomExist(topic)
+    let roomChats = []
     if (!existingRoom) {
       const messageIdDoesExist = await checkThatMessageIdExist(topic, userId)
       if (messageIdDoesExist) {
@@ -114,18 +117,54 @@ exports.getSingleRoom = async (req, res) => {
           imgPath: "",
           type: "private"
         }
-        // const room = new Rooms(roomData);
-        // await room.save()
-        const room = await Rooms.create(roomData)
 
-        return res.status(200).json(room)
+        const room = await Rooms.create(roomData)
+        return res.status(200).json({ topic: room.topic, roomChats })
 
       } else {
         return res.status(400).json({ error: "something went wrong" })
       }
 
     } else {
-      return res.status(200).json(existingRoom)
+      if (existingRoom.Chat.length > 0) {
+        const currentUser = await User.findById(userId)
+        const otherRoomUserUsername = await getOtherUserProfilePicture(currentUser.username, topic)
+
+        const currentUserProfilePicture = await getUserProfilePicture(currentUser.username)
+        const otherUserProfilePicture = await getUserProfilePicture(otherRoomUserUsername)
+
+        const Chat = existingRoom.Chat;
+
+        const currentRoomUserChats = Chat.filter((chat) => {
+          if (chat.sender === currentUser.username) {
+            let chatData = {
+              message: chat.message,
+              sender: chat.sender,
+              userImage: currentUserProfilePicture.profilePicture,
+              createdAt: chat.createdAt
+            }
+
+            return roomChats.push(chatData)
+
+          }
+        })
+
+        const otherRoomUserChats = Chat.filter((chat) => {
+          if (chat.sender !== currentUser.username) {
+
+            let chatData = {
+              message: chat.message,
+              sender: chat.sender,
+              userImage: otherUserProfilePicture.profilePicture,
+              createdAt: chat.createdAt
+            }
+            return roomChats.push(chatData)
+
+          }
+        })
+
+      }
+      return res.status(200).json({ topic: existingRoom.topic, roomChats })
     }
 
   } catch (error) {

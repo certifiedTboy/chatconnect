@@ -6,16 +6,17 @@ export const newUserLogin = (frmDt) => async (dispatch) => {
     dispatch(loginPending());
 
     const response = await userLogin(frmDt);
+
     if (response.status === "failed") {
-      dispatch(loginFail("something went wrong"));
+      dispatch(loginFail({ error: "something went wrong" }));
     }
 
     if (response.error) {
-      dispatch(loginFail(response.error));
+      dispatch(loginFail({ error: response.error }));
     } else {
       dispatch(loginSuccess());
     }
   } catch (error) {
-    dispatch(loginFail(error));
+    dispatch(loginFail({ error: "Server Error" }));
   }
 };

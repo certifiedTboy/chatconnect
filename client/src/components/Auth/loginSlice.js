@@ -15,13 +15,13 @@ const loginSlice = createSlice({
     loginPending: (state) => {
       state.isLoading = true;
       state.isAuth = false;
-      state.error = "";
+      state.error = null;
     },
     loginSuccess: (state) => {
       state.user = getCurrentUser() || null;
       state.isLoading = false;
       state.isAuth = true;
-      state.error = "";
+      state.error = null;
     },
     loginFail: (state, { payload }) => {
       state.isLoading = false;
@@ -32,7 +32,7 @@ const loginSlice = createSlice({
       state.user = null;
       state.isLoading = false;
       state.isAuth = false;
-      state.error = "";
+      state.error = null;
     },
   },
 });

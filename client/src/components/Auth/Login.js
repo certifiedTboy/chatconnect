@@ -23,7 +23,7 @@ const LoginForm = () => {
   };
   useEffect(() => {
     checkIsAutenticated();
-  }, [checkIsAutenticated, user]);
+  }, [user]);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -42,6 +42,7 @@ const LoginForm = () => {
     };
 
     if (username.trim().length === 0 || password.trim().length === 0) {
+      dispatch(loginFail({ error: "Login field can't be empty" }))
       return;
     }
     try {
@@ -51,6 +52,13 @@ const LoginForm = () => {
     }
   };
 
+  let errorData
+  if (error) {
+    errorData = <div>
+      <Alert variant="danger">{error.error}</Alert>
+    </div>
+  }
+
   return (
     <Fragment>
       <div className="col-12 col-lg-6">
@@ -59,8 +67,7 @@ const LoginForm = () => {
             <div className={classes.regheade}>
               <h4>Login Here</h4>
               <p>Login as a User</p>
-
-              {error && <Alert variant="danger">{error}</Alert>}
+              {errorData}
               <form onSubmit={loginHandler}>
                 <Form.Group>
                   <Form.Control

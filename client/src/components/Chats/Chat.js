@@ -21,10 +21,8 @@ const Chat = ({ chatMessages, roomTopic }) => {
     const { user } = useSelector((state) => state.login);
     const [currentRoom, setCurrentRoom] = useState("");
     const [socketRoomUsers, setSocketRoomUsers] = useState([]);
-    //private chat
-    const [roomUserProfile, setRoomUserProfile] = useState([])
     //private Chat
-    const [socketMessage, setSocketMessage] = useState([]);
+    const [socketMessage, setSocketMessage] = useState(chatMessages);
     const [filteredRoom, setFilteredRoom] = useState([]);
     const [isTyping, setIsTyping] = useState({});
     const [play2] = useSound(messengerEffect);
@@ -32,8 +30,6 @@ const Chat = ({ chatMessages, roomTopic }) => {
 
 
 
-
-    // console.log(roomUserProfile)
 
 
     useEffect(() => {
@@ -45,6 +41,7 @@ const Chat = ({ chatMessages, roomTopic }) => {
 
         //emit general messages to room and other users
         socket?.current.on("message", (message) => {
+            console.log(message)
             play();
             setSocketMessage((chatMessages) => [...chatMessages, message]);
         });
@@ -52,7 +49,6 @@ const Chat = ({ chatMessages, roomTopic }) => {
         //emit active room users to other users
         socket?.current.on("roomUsers", ({ room, users, usersProfile }) => {
             setCurrentRoom(room);
-            setRoomUserProfile(usersProfile)
             let currentRoomUsers = usersProfile.filter((userProfile) =>
                 users.some((user) => userProfile.user.username === user.username)
             );
@@ -104,21 +100,9 @@ const Chat = ({ chatMessages, roomTopic }) => {
 
     }, []);
 
-
-    // useEffect(() => {
-    //     socket?.current.on("typing", (data) => {
-    //         // console.log(data)
-    //         setIsTyping(data);
-    //     });
-    // }, [typingHandler]);
-
     if (isTyping.typing) {
         play2();
     }
-
-    // console.log(isTyping)
-
-
 
     return (
         <Container fluid>
@@ -133,6 +117,7 @@ const Chat = ({ chatMessages, roomTopic }) => {
                     <hr />
 
                     <div>
+
                         <ScrollToBottom className="chatBoxTop">
                             {socketMessage.map((chat) => (
                                 <Message
@@ -141,7 +126,7 @@ const Chat = ({ chatMessages, roomTopic }) => {
                                     sender={chat.sender}
                                     message={chat.message}
                                     time={chat.createdAt || new Date()}
-                                    image={chat.userImage || ""}
+                                    image={chat.userImage}
                                 />
                             ))}
                         </ScrollToBottom>

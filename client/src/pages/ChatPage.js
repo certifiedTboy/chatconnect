@@ -1,4 +1,4 @@
-import React, {useEffect, useCallback, useState} from "react"
+import React, { useEffect, useCallback, useState } from "react"
 import { fetchRoomByTopic } from "../lib/roomApi";
 import { useParams } from "react-router-dom";
 import Chat from "../components/Chats/Chat";
@@ -11,6 +11,7 @@ const ChatPage = () => {
   const [errorMessage, setErrorMessage] = useState("")
   const [chatMessages, setChatMessages] = useState([])
   const [roomTopic, setRoomTopic] = useState("")
+
   // extract room topic parameter from URL
   const params = useParams();
   const { topic } = params;
@@ -25,7 +26,8 @@ const ChatPage = () => {
         setErrorMessage(response.error)
       } else {
         setIsLoading(false)
-        setChatMessages(response.Chat)
+        // setProfiles(availableUserProfile)
+        setChatMessages(response.roomChats)
         setRoomTopic(response.topic)
       }
     } catch (error) {
@@ -40,6 +42,7 @@ const ChatPage = () => {
     }
 
     getRoomDataByTopic()
+
   }, []);
 
   if (isLoading) {

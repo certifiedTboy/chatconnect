@@ -3,7 +3,6 @@ const Profile = require("../models/profile");
 
 exports.getCurrentUser = async (req, res) => {
   const userId = req.user.id;
-  console.log(userId);
   try {
     const currentUser = await User.findById(userId);
     if (!currentUser) {
