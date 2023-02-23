@@ -5,7 +5,7 @@ const {
   getRoomUsers,
   getUserProfilePicture,
   getAllUsersProfile,
-  checkThatRoomExist
+  checkThatRoomExist,
 } = require("./utils/sockets/users");
 const {
   generalMessageFormat,
@@ -22,7 +22,7 @@ const listen = (io) => {
   // Run when client connects
   io.on("connection", (socket) => {
     socket.on("joinRoom", async ({ username, room }) => {
-      const roomExist = await checkThatRoomExist(room)
+      const roomExist = await checkThatRoomExist(room);
       const user = userJoin(socket.id, username, room, roomExist.type);
       socket.join(user.room);
 
@@ -32,9 +32,9 @@ const listen = (io) => {
           "message",
           generalMessageFormat(
             botName,
-            `Welcome to ${user.room} Room, where you discuss about ${user.room} issues!`
+            `Welcome to ${user.room} Room, where you discuss about ${user.room} issues!`,
+            "uploads/bot.png"
           )
-
         );
 
         // Broadcast to other room users when a user connects
@@ -42,19 +42,25 @@ const listen = (io) => {
           .to(user.room)
           .emit(
             "message",
-            generalMessageFormat(botName, `${user.username} has joined the chat`)
+            generalMessageFormat(
+              botName,
+              `${user.username} has joined the chat`,
+              "uploads/bot.png"
+            )
           );
-
       } else {
         // Broadcast to other room users when a user connects
         socket.broadcast
           .to(user.room)
           .emit(
             "message",
-            generalMessageFormat(botName, `${user.username} is online`)
+            generalMessageFormat(
+              botName,
+              `${user.username} is online`,
+              "uploads/bot.png"
+            )
           );
       }
-
 
       // Send users and room info to client
 
@@ -70,7 +76,7 @@ const listen = (io) => {
     socket.on("chatMessage", async (msg) => {
       const user = getCurrentUser(socket.id);
       const image = await getUserProfilePicture(user.username);
-      let dummyImage = "/public/uploads/dummyimage";
+      let dummyImage = "uploads/dummyimage";
       const userImage = image ? image.profilePicture : dummyImage;
       io.to(user.room).emit(
         "message",
@@ -81,15 +87,13 @@ const listen = (io) => {
         // save chatmessage to database
         let chatMessage = new Chat({
           message: msg.message,
-          sender: msg.sender
+          sender: msg.sender,
         });
         await chatMessage.save();
-        const currentRoom = await Room.findOne({ topic: user.room })
-        currentRoom.Chat.push(chatMessage)
-        await currentRoom.save()
-
-      } 
-
+        const currentRoom = await Room.findOne({ topic: user.room });
+        currentRoom.Chat.push(chatMessage);
+        await currentRoom.save();
+      }
     });
 
     // user typing
@@ -100,9 +104,7 @@ const listen = (io) => {
       } else {
         socket.broadcast.to(user.room).emit("typing", data);
       }
-
     });
-
 
     // Runs when client disconnects
     socket.on("disconnect", async () => {
@@ -113,7 +115,11 @@ const listen = (io) => {
             .to(user.room)
             .emit(
               "message",
-              generalMessageFormat(botName, `${user.username} has left the chat`)
+              generalMessageFormat(
+                botName,
+                `${user.username} has left the chat`,
+                "uploads/bot.png"
+              )
             );
 
           // Send users and room info
@@ -127,7 +133,11 @@ const listen = (io) => {
             .to(user.room)
             .emit(
               "message",
-              generalMessageFormat(botName, `${user.username} is offline`)
+              generalMessageFormat(
+                botName,
+                `${user.username} is offline`,
+                "uploads/bot.png"
+              )
             );
 
           // Send users and room info
@@ -137,7 +147,6 @@ const listen = (io) => {
             profile: await getAllUsersProfile(),
           });
         }
-
       }
     });
   });

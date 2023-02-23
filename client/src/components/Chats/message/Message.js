@@ -1,12 +1,9 @@
 import "./Message.css";
-import Moment from 'react-moment';
+import Moment from "react-moment";
 import { NavLink } from "react-router-dom";
 import { Fragment } from "react";
 
 const Message = ({ id, own, sender, message, time, image }) => {
-  // console.log(id, own, sender, message, time, image)
-  console.log(image)
-
   return (
     <Fragment>
       <div key={id}>
@@ -19,10 +16,13 @@ const Message = ({ id, own, sender, message, time, image }) => {
                 <img
                   className="messageImg"
                   src={`http://localhost:3001/${image}`}
-                  alt="profile img" />
+                  alt="profile img"
+                />
               </NavLink>
             </div>
-            <Moment fromNow>{time}</Moment>
+            <Moment className="meta-own" fromNow>
+              {time}
+            </Moment>
           </div>
         )}
 
@@ -33,7 +33,8 @@ const Message = ({ id, own, sender, message, time, image }) => {
                 <img
                   className="messageImg"
                   src={`http://localhost:3001/${image}`}
-                  alt="profile img" />
+                  alt="profile img"
+                />
               </NavLink>
 
               <p className="messageText">
@@ -43,7 +44,9 @@ const Message = ({ id, own, sender, message, time, image }) => {
                 {message}
               </p>
             </div>
-            <Moment fromNow>{time}</Moment>
+            <Moment className="meta" fromNow>
+              {time}
+            </Moment>
           </div>
         )}
       </div>

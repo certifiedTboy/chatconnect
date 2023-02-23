@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3001"
+const API_URL = "http://localhost:3001";
 // const API_URL = "https://chatconnect-backend-production.up.railway.app"
 
 // user login API
@@ -11,17 +11,17 @@ export const userLogin = async (data) => {
     },
   });
   try {
-
     const data = await response.json();
     if (!response.ok) {
       return data;
     }
-
+    if (data.error) {
+      return data;
+    }
     localStorage.setItem("accessJWT", data.token);
     localStorage.setItem("user", JSON.stringify(data.userData));
     return data;
   } catch (error) {
-    console.log(error);
     return error;
   }
 };

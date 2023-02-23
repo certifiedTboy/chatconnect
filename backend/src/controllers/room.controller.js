@@ -1,9 +1,13 @@
 const Rooms = require("../models/rooms");
 const Chat = require("../models/chat");
 const User = require("../models/user");
-const { checkThatMessageIdExist, checkThatRoomExist, getCurrentUserProfilePicture, getOtherUserProfilePicture } = require("../services/chatServices")
-const { getUserProfilePicture } = require("../utils/sockets/users")
-
+const {
+  checkThatMessageIdExist,
+  checkThatRoomExist,
+  createPrivateRoom,
+  getOtherRoomUserUsername,
+} = require("../services/chatServices");
+const { getUserProfilePicture } = require("../utils/sockets/users");
 
 // var rooms = [
 //   {
@@ -84,16 +88,13 @@ const { getUserProfilePicture } = require("../utils/sockets/users")
 //   }
 // });
 
-
-
 exports.getAllRooms = async (req, res) => {
   try {
     const rooms = await Rooms.find({});
     if (!rooms) {
       res.json(404).json({ message: "No rooms found" });
     } else {
-
-      const publicRooms = rooms.filter((room) => room.type === "public")
+      const publicRooms = rooms.filter((room) => room.type === "public");
       res.status(200).json(publicRooms);
     }
   } catch (error) {
@@ -101,82 +102,97 @@ exports.getAllRooms = async (req, res) => {
   }
 };
 
-
 exports.getSingleRoom = async (req, res) => {
-  const { topic } = req.params
-  const userId = req.user.id
+  const { topic } = req.params;
+  const userId = req.user.id;
   try {
-    const existingRoom = await checkThatRoomExist(topic)
-    let roomChats = []
-    if (!existingRoom) {
-      const messageIdDoesExist = await checkThatMessageIdExist(topic, userId)
-      if (messageIdDoesExist) {
-        const roomData = {
-          topic,
-          description: "",
-          imgPath: "",
-          type: "private"
+    const chats = [];
+    const existingRoom = await checkThatRoomExist(topic);
+    if (!existingRoom || existingRoom.error) {
+      const messageIdDoesExist = await checkThatMessageIdExist(topic, userId);
+      console.log(messageIdDoesExist);
+      if (messageIdDoesExist || !messageIdDoesExist.error) {
+        const room = await createPrivateRoom(topic);
+        if (room) {
+          return res
+            .status(200)
+            .json({ topic: room.topic, roomChats: room.Chat });
+        } else {
+          return res.status(400).json({ error: "something went wrong" });
         }
-
-        const room = await Rooms.create(roomData)
-        return res.status(200).json({ topic: room.topic, roomChats })
-
       } else {
-        return res.status(400).json({ error: "something went wrong" })
+        return res.status(400).json({ error: "something went wrong" });
       }
-
     } else {
       if (existingRoom.Chat.length > 0) {
-        const currentUser = await User.findById(userId)
-        const otherRoomUserUsername = await getOtherUserProfilePicture(currentUser.username, topic)
+        const currentUser = await User.findById(userId);
+        const otherRoomUserUsername = await getOtherRoomUserUsername(
+          currentUser.username,
+          topic
+        );
 
-        const currentUserProfilePicture = await getUserProfilePicture(currentUser.username)
-        const otherUserProfilePicture = await getUserProfilePicture(otherRoomUserUsername)
+        const currentUserProfilePicture = await getUserProfilePicture(
+          currentUser.username
+        );
+        const otherUserProfilePicture = await getUserProfilePicture(
+          otherRoomUserUsername
+        );
 
         const Chat = existingRoom.Chat;
 
         const currentRoomUserChats = Chat.filter((chat) => {
+          let chatData;
           if (chat.sender === currentUser.username) {
-            let chatData = {
+            let createdChatData = {
               message: chat.message,
               sender: chat.sender,
               userImage: currentUserProfilePicture.profilePicture,
-              createdAt: chat.createdAt
-            }
-
-            return roomChats.push(chatData)
-
+              createdAt: chat.createdAt,
+            };
+            chats.push(createdChatData);
           }
-        })
+
+          return chatData;
+        });
 
         const otherRoomUserChats = Chat.filter((chat) => {
+          let otherChatData;
           if (chat.sender !== currentUser.username) {
-
-            let chatData = {
+            let otherCreatedData = {
               message: chat.message,
               sender: chat.sender,
               userImage: otherUserProfilePicture.profilePicture,
-              createdAt: chat.createdAt
-            }
-            return roomChats.push(chatData)
+              createdAt: chat.createdAt,
+            };
 
+            chats.push(otherCreatedData);
           }
-        })
+          return otherChatData;
+        });
 
+        const sortedChat = chats.sort((a, b) =>
+          a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0
+        );
+
+        return res.status(200).json({
+          topic: existingRoom.topic,
+          roomChats: sortedChat,
+        });
+      } else {
+        return res.status(200).json({
+          topic: existingRoom.topic,
+          roomChats: existingRoom.Chat,
+        });
       }
-      return res.status(200).json({ topic: existingRoom.topic, roomChats })
     }
-
   } catch (error) {
-    console.log(error)
+    return res.status(400).json({ error: "Something went wrong" });
   }
 };
 
-
-
 exports.getRoomData = async (req, res) => {
   try {
-    const room = await Rooms.findOne({ topic: req.params.topic })
+    const room = await Rooms.findOne({ topic: req.params.topic });
     if (!room) {
       return res.json(404).json({ error: "No rooms found" });
     } else {

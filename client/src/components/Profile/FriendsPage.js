@@ -4,7 +4,6 @@ import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const FriendsPage = ({ friendsList }) => {
-  console.log(friendsList);
   const { user } = useSelector((state) => state.login);
   const params = useParams();
   const { username } = params;

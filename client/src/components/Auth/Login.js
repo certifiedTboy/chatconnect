@@ -41,10 +41,10 @@ const LoginForm = () => {
       password,
     };
 
-    if (username.trim().length === 0 || password.trim().length === 0) {
-      dispatch(loginFail({ error: "Login field can't be empty" }))
-      return;
-    }
+    // if (username.trim().length === 0 || password.trim().length === 0) {
+    //   dispatch(loginFail({ error: "Login field can't be empty" }));
+    //   return;
+    // }
     try {
       dispatch(newUserLogin(data));
     } catch (error) {
@@ -52,11 +52,13 @@ const LoginForm = () => {
     }
   };
 
-  let errorData
+  let errorData;
   if (error) {
-    errorData = <div>
-      <Alert variant="danger">{error.error}</Alert>
-    </div>
+    errorData = (
+      <div>
+        <Alert variant="danger">{error.error}</Alert>
+      </div>
+    );
   }
 
   return (

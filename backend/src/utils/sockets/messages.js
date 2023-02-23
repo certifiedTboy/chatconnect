@@ -1,7 +1,8 @@
-const generalMessageFormat = (sender, message) => {
+const generalMessageFormat = (sender, message, userImage) => {
   return {
     sender,
     message,
+    userImage,
   };
 };
 

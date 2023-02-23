@@ -10,20 +10,78 @@ exports.dataFieldLength = (req, res, next) => {
     req.body.password.trim().length <= 0
   ) {
     return res.json({
-      message: `Input fields cannot be empty 
+      error: `Input fields cannot be empty 
         Ensure you provide all input fields correctly`,
     });
   }
   next();
 };
 
-exports.passwordValidity = (req, res, mext) => {
+exports.passwordValidity = (req, res, next) => {
   if (
     req.body.password.trim() !== req.body.confirmPassword.trim() ||
     req.body.password.trim().length <= 7
   ) {
     return res.json({
-      message: `Invalid password Password must not be less than 8`,
+      error: `Invalid password Password must not be less than 8`,
     });
   }
+
+  next();
+};
+
+exports.passwordFormat = (req, res, next) => {
+  const { password } = req.body;
+  const valid = {
+    hasUpper: /[A-Z]/,
+    hasLower: /[a-z]/,
+    hasNumber: /[0-9]/,
+    hasSpclChr: /[@,#,$,%,&]/,
+  };
+
+  if (
+    !password.match(valid.hasUpper) &&
+    !password.match(valid.hasLower) &&
+    !password.match(valid.hasNumber) &&
+    !password.match(valid.hasSpclChr)
+  ) {
+    return res.json({
+      error: `invalid password format`,
+    });
+  }
+
+  next();
+};
+
+exports.confirmPasswordFormat = (req, res, next) => {
+  const { confirmPassword } = req.body;
+  const valid = {
+    hasUpper: /[A-Z]/,
+    hasLower: /[a-z]/,
+    hasNumber: /[0-9]/,
+    hasSpclChr: /[@,#,$,%,&]/,
+  };
+
+  if (
+    !password.match(valid.hasUpper) &&
+    !password.match(valid.hasLower) &&
+    !password.match(valid.hasNumber) &&
+    !password.match(valid.hasSpclChr)
+  ) {
+    return res.json({
+      error: `Passwords does not match`,
+    });
+  }
+
+  next();
+};
+
+exports.loginCredentialsValidity = (req, res, next) => {
+  if (req.body.password.trim().length === 0 || req.body.username === "") {
+    return res.json({
+      error: `invalid login request`,
+    });
+  }
+
+  next();
 };

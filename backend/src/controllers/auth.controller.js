@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
-const { checkThatUserExist } = require("../services/userServices")
+const { checkThatUserExist } = require("../services/userServices");
 const Profile = require("../models/profile");
 const bcrypt = require("bcrypt");
 require("dotenv").config();
@@ -9,10 +9,9 @@ const { SECRET } = process.env;
 // user signup configuration
 exports.signup = async (req, res) => {
   const { username, name, email, phoneNumber, password } = req.body;
-  console.log(username)
+  console.log(username);
   try {
-    const user = await checkThatUserExist(username)
-    console.log(user)
+    const user = await checkThatUserExist(username);
     if (user) {
       return res
         .status(403)
@@ -47,10 +46,10 @@ exports.signup = async (req, res) => {
   }
 };
 
-// User signin controller function 
+// User signin controller function
 exports.signin = async (req, res) => {
   const { username, password } = req.body;
-  req.headers["user-agent"] || ""
+  req.headers["user-agent"] || "";
   try {
     let user = await User.findOne({ username });
 

@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3001"
+const API_URL = "http://localhost:3001";
 // const API_URL = "https://chatconnect-backend-production.up.railway.app"
 
 export const fetchRooms = async () => {
@@ -36,7 +36,6 @@ export const fetchRoomByTopic = async (topic) => {
     });
 
     if (!response.ok) {
-
       return response.error;
     }
     const data = await response.json();
@@ -45,7 +44,6 @@ export const fetchRoomByTopic = async (topic) => {
     return error;
   }
 };
-
 
 export const fetchRoomData = async (topic) => {
   const token = localStorage.getItem("accessJWT");
@@ -60,7 +58,6 @@ export const fetchRoomData = async (topic) => {
     });
 
     if (!response.ok) {
-
       return response.error;
     }
     const data = await response.json();
@@ -69,5 +66,3 @@ export const fetchRoomData = async (topic) => {
     return error;
   }
 };
-
-

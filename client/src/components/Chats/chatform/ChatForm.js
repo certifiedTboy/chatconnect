@@ -3,6 +3,7 @@ import { Form } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import Picker from "emoji-picker-react";
 import useSound from "use-sound";
+import emojiIcon from "../../../assets/emoji.jpg";
 import messageSent from "../../../sounds/sentmessage.mp3";
 // import messengerEffect from "../../../sounds/messenger.mp3";
 import click from "../../../sounds/click.mp3";
@@ -92,7 +93,7 @@ const ChatForm = (props) => {
               onKeyUp={stopTypingOption}
             ></input>
             <img
-              src="https://t3.ftcdn.net/jpg/05/05/86/58/360_F_505865847_HAJ4BtMDxVYTKlveu5BDyljAym3ODnO8.jpg"
+              src={emojiIcon}
               className="input_img"
               onClick={() => {
                 if (showEmoji === true) {
@@ -102,7 +103,7 @@ const ChatForm = (props) => {
                   setShowEmoji(true);
                 }
               }}
-              alt="emoji icon" />
+              />
           </div>
         </div>
       </Form>
