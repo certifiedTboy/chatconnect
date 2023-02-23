@@ -9,8 +9,8 @@
   width: 100%;
   height: 100%;
   padding: 10px;
+  border-color: rgb(75, 75, 75);
 }
-
 
 .input_container {
   position: relative;

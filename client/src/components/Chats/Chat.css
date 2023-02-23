@@ -19,7 +19,12 @@
 }
 
 .chatBoxTop {
-  height: 280px;
+  height: 430px !important;
+  padding-right: 10px;
+}
+
+.chatBoxTop2 {
+  height: 280px !important;
   padding-right: 10px;
 }
 

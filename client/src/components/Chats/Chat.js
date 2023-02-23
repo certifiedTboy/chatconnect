@@ -23,6 +23,7 @@ const Chat = ({ chatMessages, roomTopic }) => {
   //private Chat
   const [socketMessage, setSocketMessage] = useState(chatMessages);
   const [filteredRoom, setFilteredRoom] = useState([]);
+  const [emojiData, setEmojiData] = useState(false);
   const [isTyping, setIsTyping] = useState({});
   const [play2] = useSound(messengerEffect);
   const [play] = useSound(ebuddy);
@@ -93,6 +94,9 @@ const Chat = ({ chatMessages, roomTopic }) => {
     play2();
   }
 
+  const onShowEmojiData = (data) => {
+    setEmojiData(data);
+  };
   return (
     <Container fluid>
       <Row>
@@ -106,7 +110,9 @@ const Chat = ({ chatMessages, roomTopic }) => {
           <hr />
 
           <div>
-            <ScrollToBottom className="chatBoxTop">
+            <ScrollToBottom
+              className={emojiData === true ? "chatBoxTop2" : "chatBoxTop"}
+            >
               {socketMessage.map((chat) => (
                 <Message
                   id={chat._id}
@@ -124,7 +130,11 @@ const Chat = ({ chatMessages, roomTopic }) => {
               </div>
             )}
 
-            <ChatForm onSubmit={sendHandler} onTyping={typingHandler} />
+            <ChatForm
+              onSubmit={sendHandler}
+              onTyping={typingHandler}
+              onShowEmojiData={onShowEmojiData}
+            />
           </div>
         </Col>
         <Col sm={12} md={3} lg={3}>

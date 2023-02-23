@@ -12,14 +12,12 @@ import "./ChatForm.css";
 
 const ChatForm = (props) => {
   const [message, setMessage] = useState("");
-  const [showEmoji, setShowEmoji] = useState(true);
+  const [showEmoji, setShowEmoji] = useState(false);
   const focusInput = useRef();
   const [play] = useSound(messageSent);
   // const [play2] = useSound(messengerEffect);
   const [play3] = useSound(click);
   const { user } = useSelector((state) => state.login);
-
-
 
   // listening to typing event
   const typingOption = (event) => {
@@ -30,8 +28,6 @@ const ChatForm = (props) => {
   const stopTypingOption = () => {
     props.onTyping(`stopTyping`);
   };
-
-
 
   // get chat message input text area state
   const messageHandler = (event) => {
@@ -62,10 +58,20 @@ const ChatForm = (props) => {
     }
   };
 
-
   const onEmojiClick = (event, emojiObject) => {
     play3();
     setMessage(emojiObject.emoji);
+  };
+
+  const onShowEmoji = () => {
+    if (showEmoji === true) {
+      setShowEmoji(false);
+      props.onShowEmojiData(false);
+    }
+    if (showEmoji === false) {
+      setShowEmoji(true);
+      props.onShowEmojiData(true);
+    }
   };
 
   // console.log(message);
@@ -73,13 +79,6 @@ const ChatForm = (props) => {
     <div className="chatBoxBottom">
       <Form onSubmit={SendMessageHandler}>
         <div>
-          {showEmoji && (
-            <Picker
-              onEmojiClick={onEmojiClick}
-              disableSearchBar={true}
-              pickerStyle={{ width: "100%" }}
-            />
-          )}
           <div className="input_container">
             <input
               type="text"
@@ -92,20 +91,16 @@ const ChatForm = (props) => {
               // onKeyDown={SendMessageHandler}
               onKeyUp={stopTypingOption}
             ></input>
-            <img
-              src={emojiIcon}
-              className="input_img"
-              onClick={() => {
-                if (showEmoji === true) {
-                  setShowEmoji(false);
-                }
-                if (showEmoji === false) {
-                  setShowEmoji(true);
-                }
-              }}
-              />
+            <img src={emojiIcon} className="input_img" onClick={onShowEmoji} />
           </div>
         </div>
+        {showEmoji && (
+          <Picker
+            onEmojiClick={onEmojiClick}
+            disableSearchBar={true}
+            pickerStyle={{ width: "100%" }}
+          />
+        )}
       </Form>
     </div>
   );
