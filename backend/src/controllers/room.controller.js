@@ -110,7 +110,6 @@ exports.getSingleRoom = async (req, res) => {
     const existingRoom = await checkThatRoomExist(topic);
     if (!existingRoom || existingRoom.error) {
       const messageIdDoesExist = await checkThatMessageIdExist(topic, userId);
-      console.log(messageIdDoesExist);
       if (messageIdDoesExist || !messageIdDoesExist.error) {
         const room = await createPrivateRoom(topic);
         if (room) {

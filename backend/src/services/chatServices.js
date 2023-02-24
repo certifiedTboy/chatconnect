@@ -18,7 +18,7 @@ exports.checkThatMessageIdExist = async (topic, userId) => {
   try {
     const user = await User.findById(userId);
     if (user) {
-      const messageIdExist = user.friendsList.map((friend) => {
+      const messageIdExist = user.friendsList.find((friend) => {
         return friend.messagingId === topic;
       });
       return messageIdExist;
@@ -51,17 +51,12 @@ exports.createPrivateRoom = async (topic) => {
 
 exports.getOtherRoomUserUsername = async (currentUsername, topic) => {
   try {
-    const room = await Rooms.findOne({ topic }).populate("Chat").exec();
-    if (room) {
-      const Chat = room.Chat;
-
-      const otherRoomUser = Chat.find((chat) => {
-        if (chat.sender !== currentUsername) {
-          return chat.sender;
-        }
-      });
-      return otherRoomUser.sender;
-      //   return currentRoomUser
+    const user = await User.findOne({ username: currentUsername });
+    if (user) {
+      const userFriend = user.friendsList.find(
+        (friend) => friend.messagingId === topic
+      );
+      return userFriend.username;
     } else {
       return { error: "something went wrong" };
     }

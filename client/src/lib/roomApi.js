@@ -35,10 +35,12 @@ export const fetchRoomByTopic = async (topic) => {
       },
     });
 
+    const data = await response.json();
+    console.log(data);
     if (!response.ok) {
       return response.error;
     }
-    const data = await response.json();
+
     return data;
   } catch (error) {
     return error;
