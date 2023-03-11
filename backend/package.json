@@ -15,10 +15,12 @@
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^15.0.0",
+    "elasticemail": "^0.2.0",
     "express": "^4.17.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.1.9",
     "multer": "^1.4.4",
+    "nodemailer": "^6.9.1",
     "socket.io": "^4.4.1"
   },
   "devDependencies": {

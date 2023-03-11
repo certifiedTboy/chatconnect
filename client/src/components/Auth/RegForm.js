@@ -278,7 +278,13 @@ const RegForm = () => {
                 >
                   Register
                 </button>
-                <p style={{ display: "inline", marginLeft: 10 }}>
+                <p
+                  style={{
+                    display: "inline",
+                    marginLeft: 11,
+                    fontSize: "15px",
+                  }}
+                >
                   Already Have an Account ?{" "}
                   <NavLink to={"/login"}>Sign In</NavLink>
                 </p>

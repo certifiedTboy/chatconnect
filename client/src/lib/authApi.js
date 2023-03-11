@@ -63,3 +63,71 @@ export const logoutUser = async () => {
     return error;
   }
 };
+
+export const requestPasswordRest = async (userData) => {
+  try {
+    const response = await fetch(`${API_URL}/reset-password-request`, {
+      method: "POST",
+      body: JSON.stringify(userData),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      return data;
+    }
+    if (data.error) {
+      return data;
+    }
+
+    return data;
+  } catch (error) {
+    return error;
+  }
+};
+
+export const verifyPasswordToken = async (tokenData) => {
+  try {
+    const response = await fetch(`${API_URL}/verify-token`, {
+      method: "POST",
+      body: JSON.stringify(tokenData),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      return data;
+    }
+    if (data.error) {
+      return data;
+    }
+
+    return data;
+  } catch (error) {}
+};
+
+export const setNewPassword = async (passwordData) => {
+  try {
+    const response = await fetch(`${API_URL}/reset-password`, {
+      method: "POST",
+      body: JSON.stringify(passwordData),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      return data;
+    }
+    if (data.error) {
+      return data;
+    }
+
+    return data;
+  } catch (error) {}
+};

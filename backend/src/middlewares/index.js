@@ -63,10 +63,69 @@ exports.confirmPasswordFormat = (req, res, next) => {
   };
 
   if (
-    !password.match(valid.hasUpper) &&
-    !password.match(valid.hasLower) &&
-    !password.match(valid.hasNumber) &&
-    !password.match(valid.hasSpclChr)
+    !confirmPassword.match(valid.hasUpper) &&
+    !confirmPassword.match(valid.hasLower) &&
+    !confirmPassword.match(valid.hasNumber) &&
+    !confirmPassword.match(valid.hasSpclChr)
+  ) {
+    return res.json({
+      error: `Passwords does not match`,
+    });
+  }
+
+  next();
+};
+
+exports.newPasswordValidity = (req, res, next) => {
+  if (
+    req.body.newPassword.trim() !== req.body.newConfirmPassword.trim() ||
+    req.body.newPassword.trim().length <= 7
+  ) {
+    return res.json({
+      error: `Invalid password Password must not be less than 8`,
+    });
+  }
+
+  next();
+};
+
+exports.newPasswordFormat = (req, res, next) => {
+  const { newPassword } = req.body;
+  const valid = {
+    hasUpper: /[A-Z]/,
+    hasLower: /[a-z]/,
+    hasNumber: /[0-9]/,
+    hasSpclChr: /[@,#,$,%,&]/,
+  };
+
+  if (
+    !newPassword.match(valid.hasUpper) &&
+    !newPassword.match(valid.hasLower) &&
+    !newPassword.match(valid.hasNumber) &&
+    !newPassword.match(valid.hasSpclChr)
+  ) {
+    return res.json({
+      error: `invalid password format`,
+    });
+  }
+
+  next();
+};
+
+exports.newConfirmPasswordFormat = (req, res, next) => {
+  const { newConfirmPassword } = req.body;
+  const valid = {
+    hasUpper: /[A-Z]/,
+    hasLower: /[a-z]/,
+    hasNumber: /[0-9]/,
+    hasSpclChr: /[@,#,$,%,&]/,
+  };
+
+  if (
+    !newConfirmPassword.match(valid.hasUpper) &&
+    !newConfirmPassword.match(valid.hasLower) &&
+    !newConfirmPassword.match(valid.hasNumber) &&
+    !newConfirmPassword.match(valid.hasSpclChr)
   ) {
     return res.json({
       error: `Passwords does not match`,

@@ -36,7 +36,6 @@ export const fetchRoomByTopic = async (topic) => {
     });
 
     const data = await response.json();
-    console.log(data);
     if (!response.ok) {
       return response.error;
     }

@@ -25,8 +25,8 @@ const Chat = ({ chatMessages, roomTopic }) => {
   const [filteredRoom, setFilteredRoom] = useState([]);
   const [emojiData, setEmojiData] = useState(false);
   const [isTyping, setIsTyping] = useState({});
-  const [play2] = useSound(messengerEffect);
   const [play] = useSound(ebuddy);
+  const [play2] = useSound(messengerEffect);
 
   useEffect(() => {
     // emit notification to room and other users when a new user joins room
@@ -37,7 +37,9 @@ const Chat = ({ chatMessages, roomTopic }) => {
 
     //emit general messages to room and other users
     socket?.current.on("message", (message) => {
-      play();
+      if (message) {
+        play();
+      }
       setSocketMessage((chatMessages) => [...chatMessages, message]);
     });
 
@@ -56,7 +58,7 @@ const Chat = ({ chatMessages, roomTopic }) => {
     socket?.current.on("typing", (data) => {
       setIsTyping(data);
     });
-  }, []);
+  }, [socket]);
 
   // sending chats to socket server function
   const sendHandler = async (data) => {

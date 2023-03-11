@@ -1,0 +1,39 @@
+.cont {
+    display: flex;
+  flex-flow: column;
+  height: 100%;
+  align-items: space-around;
+  justify-content: center;
+  }
+
+  .userInput {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .inp {
+    margin: 10px;
+    height: 35px;
+    width: 65px;
+    border: solid;
+    border-radius: 5px;
+    text-align: center;
+    font-family: arimo;
+    font-size: 1.2rem;
+    background: #eef2f3;
+    display: flex !important;
+    justify-content: center;
+    float: left
+  }
+  
+  h1 {
+    text-align: center;
+    font-family: arimo;
+    color: honeydew;
+  }
+
+
+  .regheader {
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+  }
+    

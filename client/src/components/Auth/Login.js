@@ -41,10 +41,11 @@ const LoginForm = () => {
       password,
     };
 
-    // if (username.trim().length === 0 || password.trim().length === 0) {
-    //   dispatch(loginFail({ error: "Login field can't be empty" }));
-    //   return;
-    // }
+    if (username.trim().length === 0 || password.trim().length === 0) {
+      dispatch(loginFail({ error: "Login field can't be empty" }));
+      return;
+    }
+
     try {
       dispatch(newUserLogin(data));
     } catch (error) {
@@ -103,10 +104,17 @@ const LoginForm = () => {
                   </button>
                   <p
                     className="log"
-                    style={{ display: "inline", marginLeft: 11 }}
+                    style={{
+                      display: "inline",
+                      marginLeft: 11,
+                      fontSize: "15px",
+                    }}
                   >
-                    Dont' have an Account ?{" "}
-                    <NavLink to={"/register"}>Sign Up</NavLink>
+                    Dont' have an Account?{" "}
+                    <NavLink className="mr-5" to={"/register"}>
+                      Sign Up
+                    </NavLink>
+                    <NavLink to={"/password-reset"}>Forgot password</NavLink>
                   </p>
                 </div>
               </form>
