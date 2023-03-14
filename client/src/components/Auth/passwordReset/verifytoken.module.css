@@ -1,39 +1,29 @@
-.cont {
-    display: flex;
-  flex-flow: column;
-  height: 100%;
-  align-items: space-around;
-  justify-content: center;
-  }
 
-  .userInput {
-    display: flex;
-    justify-content: center;
-  }
   
   .inp {
-    margin: 10px;
+    margin: 5px;
     height: 35px;
-    width: 65px;
+    width: 50px;
     border: solid;
     border-radius: 5px;
-    text-align: center;
-    font-family: arimo;
-    font-size: 1.2rem;
     background: #eef2f3;
     display: flex !important;
     justify-content: center;
-    float: left
+    float: left;
+    text-align: center;
+    /* font-family: arimo; */
+    /* font-size: 1.2rem; */
+  }
+
+
+  .formTextWrapper {
+    margin-top: 10px;
+    margin-bottom: 30px;
+  }
+
+  
+  .formText1 {
+    font-weight: 600;
+    font-size: 15px;
   }
   
-  h1 {
-    text-align: center;
-    font-family: arimo;
-    color: honeydew;
-  }
-
-
-  .regheader {
-    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
-  }
-    

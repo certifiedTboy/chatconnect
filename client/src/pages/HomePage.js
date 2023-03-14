@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { Outlet } from "react-router-dom";
-import Image from "../assets/back.jpg";
+// import Image from "../assets/back.jpg";
 import { useSelector } from "react-redux";
 import LoadingSpinner from "../components/UI/LoadingSpinner";
 const HomePage = () => {
@@ -10,18 +10,15 @@ const HomePage = () => {
     <Fragment>
       <section className="container" style={{ marginTop: 140 }}>
         <div className="row">
-          <div className="col-6 col-lg-6 d-none d-lg-block">
-            <div>
-              <img src={Image} alt="" />
-            </div>
-          </div>
+          <div className="col-1 col-lg-4 col-md-3"></div>
           <Outlet />
+          <div className="col-1 col-lg-4 col-md-3"></div>
+        </div>
+        <div className="centered" style={{ marginTop: -300 }}>
+          {isLoading && <LoadingSpinner />}
+          {loginLoading && <LoadingSpinner />}
         </div>
       </section>
-      <div className="centered" style={{ marginTop: -320 }}>
-        {isLoading && <LoadingSpinner />}
-        {loginLoading && <LoadingSpinner />}
-      </div>
     </Fragment>
   );
 };

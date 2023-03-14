@@ -4,7 +4,7 @@ const Profile = require("../models/profile");
 exports.getCurrentUser = async (req, res) => {
   const userId = req.user.id;
   try {
-    const currentUser = await User.findById(userId);
+    const currentUser = await User.findById(userId).select("-password");
     if (!currentUser) {
       return res.status(404).json({ error: "user not found" });
     }
@@ -17,7 +17,7 @@ exports.getCurrentUser = async (req, res) => {
 
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({});
+    const users = await User.find({}).select("-password");
     // console.log(users);
     res.json(users);
   } catch (error) {
@@ -28,7 +28,10 @@ exports.getAllUsers = async (req, res) => {
 exports.getUserProfile = async (req, res) => {
   const { username } = req.params;
   try {
-    const user = await User.findOne({ username }).populate("profile").exec();
+    const user = await User.findOne({ username })
+      .select("-password")
+      .populate("profile")
+      .exec();
     if (!user) {
       return res.status(404).json({ message: "Something went wrong" });
     }
@@ -174,6 +177,7 @@ exports.searchUsers = async (req, res) => {
         { phoneNumber: { $regex: searchdata } },
       ],
     })
+      .select("-password")
       .populate("profile")
       .exec();
 

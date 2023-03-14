@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import classes from "./RegForm.module.css";
 import { newUserRegisteration } from "./userRegActions";
 import { Alert, Form } from "react-bootstrap";
 
@@ -155,143 +156,120 @@ const RegForm = () => {
     ? "form-control invalid"
     : "form-control topmag gg";
   return (
-    <div className="col-12 col-lg-6">
-      <div className="container">
-        <div className="row">
+    <div className="col-8 col-lg-4 col-md-6">
+      <div className={classes.formBorder}>
+        <h4 className={classes.regFormHeader}>Register here</h4>
+
+        {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
+        {error.passwordError && (
+          <Alert variant="danger">{error.passwordError}</Alert>
+        )}
+        {error.nameError && <Alert variant="danger">{error.nameError}</Alert>}
+        {error.phoneError && <Alert variant="danger">{error.phoneError}</Alert>}
+        {error.emailError && <Alert variant="danger">{error.emailError}</Alert>}
+        {error.passwordMatchError && (
+          <Alert variant="danger">{error.passwordMatchError}</Alert>
+        )}
+        {error.tncError && <Alert variant="danger">{error.tncError}</Alert>}
+        {/* Output Error Messages */}
+
+        <form onSubmit={formSubmitHandler}>
+          <Form.Group>
+            <Form.Control
+              type="text"
+              name="username"
+              placeholder="Enter Username"
+              className={nameFieldClasses}
+              onChange={usernameHandler}
+              value={username}
+              style={{
+                marginBottom: 10,
+              }}
+            />
+          </Form.Group>
+          <Form.Group>
+            <Form.Control
+              type="text"
+              name="email"
+              className={emailClasses}
+              placeholder="Email Address"
+              value={email}
+              onChange={emailHandler}
+              style={{
+                marginBottom: 10,
+              }}
+            />
+          </Form.Group>
+          <Form.Group>
+            <Form.Control
+              type="text"
+              name="name"
+              onChange={nameHandler}
+              className={nameFieldClasses}
+              placeholder="Enter Full Name"
+              value={name}
+              style={{
+                marginBottom: 10,
+              }}
+            />
+          </Form.Group>
+          <Form.Group>
+            <Form.Control
+              type="text"
+              name="phoneNumer"
+              onChange={phoneNumberHandler}
+              className={phoneClasses}
+              placeholder="Phone Number"
+              value={phoneNumber}
+              style={{
+                marginBottom: 10,
+              }}
+            />
+          </Form.Group>
+
+          <Form.Group>
+            <Form.Control
+              type="password"
+              value={password}
+              onChange={passwordHandler}
+              className={passwordClass}
+              placeholder="Password"
+              style={{
+                marginBottom: 10,
+              }}
+            />
+          </Form.Group>
+          <Form.Group>
+            <Form.Control
+              type="password"
+              value={confirmPassword}
+              onChange={confirmPasswordHandler}
+              className={passwordMatchClass}
+              placeholder="Confirm Password"
+              style={{
+                marginBottom: 10,
+              }}
+            />
+          </Form.Group>
+
           <div>
-            <h4>Sign Up Here</h4>
-            <p>Register to chat with other Users</p>
-
-            {/* Output Error Messages */}
-
-            {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
-            {error.passwordError && (
-              <Alert variant="danger">{error.passwordError}</Alert>
-            )}
-            {error.nameError && (
-              <Alert variant="danger">{error.nameError}</Alert>
-            )}
-            {error.phoneError && (
-              <Alert variant="danger">{error.phoneError}</Alert>
-            )}
-            {error.emailError && (
-              <Alert variant="danger">{error.emailError}</Alert>
-            )}
-            {error.passwordMatchError && (
-              <Alert variant="danger">{error.passwordMatchError}</Alert>
-            )}
-            {error.tncError && <Alert variant="danger">{error.tncError}</Alert>}
-            {/* Output Error Messages */}
-
-            <form onSubmit={formSubmitHandler}>
-              <Form.Group>
-                <Form.Control
-                  type="text"
-                  name="username"
-                  placeholder="Enter Username"
-                  className={nameFieldClasses}
-                  onChange={usernameHandler}
-                  value={username}
-                  style={{
-                    marginBottom: 10,
-                  }}
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Control
-                  type="text"
-                  name="email"
-                  className={emailClasses}
-                  placeholder="Email Address"
-                  value={email}
-                  onChange={emailHandler}
-                  style={{
-                    marginBottom: 10,
-                  }}
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Control
-                  type="text"
-                  name="name"
-                  onChange={nameHandler}
-                  className={nameFieldClasses}
-                  placeholder="Enter Full Name"
-                  value={name}
-                  style={{
-                    marginBottom: 10,
-                  }}
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Control
-                  type="text"
-                  name="phoneNumer"
-                  onChange={phoneNumberHandler}
-                  className={phoneClasses}
-                  placeholder="Phone Number"
-                  value={phoneNumber}
-                  style={{
-                    marginBottom: 10,
-                  }}
-                />
-              </Form.Group>
-
-              <Form.Group>
-                <Form.Control
-                  type="password"
-                  value={password}
-                  onChange={passwordHandler}
-                  className={passwordClass}
-                  placeholder="Password"
-                  style={{
-                    marginBottom: 10,
-                  }}
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Control
-                  type="password"
-                  value={confirmPassword}
-                  onChange={confirmPasswordHandler}
-                  className={passwordMatchClass}
-                  placeholder="Confirm Password"
-                  style={{
-                    marginBottom: 10,
-                  }}
-                />
-              </Form.Group>
-
-              <div>
-                <label htmlFor="tnc">
-                  <p>
-                    <input value="tnc" type="checkbox" onChange={tncHandler} />I
-                    have read and agree to the terms and conditions guiding the
-                    usage of our services <a href="#">Terms & Conditions</a>
-                  </p>
-                </label>
-              </div>
-              <div className="form-group">
-                <button
-                  style={{ display: "inline" }}
-                  className="btn btn-success"
-                >
-                  Register
-                </button>
-                <p
-                  style={{
-                    display: "inline",
-                    marginLeft: 11,
-                    fontSize: "15px",
-                  }}
-                >
-                  Already Have an Account ?{" "}
-                  <NavLink to={"/login"}>Sign In</NavLink>
-                </p>
-              </div>
-            </form>
+            <label htmlFor="tnc">
+              <p>
+                <input value="tnc" type="checkbox" onChange={tncHandler} />I
+                have read and agree to the <a href="#">terms & conditions</a>
+              </p>
+            </label>
           </div>
-        </div>
+          <div className="form-group">
+            <button className="btn btn-success">Register</button>
+            <p>
+              Already Have an Account ?{" "}
+              <NavLink className={classes.formText1} to={"/login"}>
+                Sign In
+              </NavLink>
+            </p>
+          </div>
+        </form>
       </div>
     </div>
   );

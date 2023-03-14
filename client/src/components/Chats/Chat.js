@@ -99,11 +99,24 @@ const Chat = ({ chatMessages, roomTopic }) => {
   const onShowEmojiData = (data) => {
     setEmojiData(data);
   };
+
+  const defaultRooms = [
+    "Sex",
+    "Relationshop",
+    "News",
+    "Music",
+    "Comedy",
+    "Movies",
+    "Daily Horoscope",
+    "Politics",
+    "Sport",
+  ];
+
   return (
     <Container fluid>
       <Row>
         <Col sm={12} md={3} lg={3}>
-          <h3>{currentRoom}</h3>
+          <h3>{defaultRooms.includes(currentRoom) && currentRoom}</h3>
           <div className="chatMenuWrapper show">
             <Conversation users={socketRoomUsers || []} />
           </div>

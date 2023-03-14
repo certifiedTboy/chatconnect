@@ -8,6 +8,7 @@ import {
   verifyPasswordToken,
   setNewPassword,
 } from "../../../lib/authApi";
+import LoadingSpinner from "../../UI/LoadingSpinner";
 
 const RequestPasswordReset = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -15,13 +16,26 @@ const RequestPasswordReset = () => {
   const [emailIsValid, setEmailIsValid] = useState(false);
   const [tokenIsValid, setTokenIsValid] = useState(false);
   const [token, setToken] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
   const onRequestPasswordReset = async (data) => {
+    if (data.email.trim().length === 0) {
+      return setErrorMessage("No field entered");
+    }
+
+    if (!data.email.trim().includes("@")) {
+      return setErrorMessage("invalid email address");
+    }
+
+    setIsLoading(true);
+
     const response = await requestPasswordRest(data);
     if (response.error) {
-      return setErrorMessage(response.error);
+      setIsLoading(false);
+      setErrorMessage(response.error);
+      return;
     }
 
     // setEmailIsValid(true);
@@ -32,14 +46,18 @@ const RequestPasswordReset = () => {
     setValidMessage(
       `A code has been sent to ${data.email}, enter code to reset password`
     );
+    setIsLoading(false);
   };
 
   const onVerifyPasswordToken = async (data) => {
+    setIsLoading(true);
     const response = await verifyPasswordToken(data);
     if (response.error) {
+      setIsLoading(false);
       return setErrorMessage(response.error);
     }
 
+    setIsLoading(false);
     localStorage.removeItem("emailIsValid");
     localStorage.setItem("tokenIsValid", true);
     localStorage.setItem("validToken", response.validToken);
@@ -87,12 +105,15 @@ const RequestPasswordReset = () => {
       return;
     }
     const response = await setNewPassword(data);
+    setIsLoading(true);
     if (response.error) {
+      setIsLoading(false);
       return setErrorMessage(response.error);
     }
 
     localStorage.removeItem("validToken");
     localStorage.removeItem("tokenIsValid");
+    setIsLoading(false);
     navigate("/login");
   };
 
@@ -116,37 +137,37 @@ const RequestPasswordReset = () => {
 
   return (
     <Fragment>
-      <div className="col-12 col-lg-6">
-        <div className="container">
-          <div className="row">
-            {!emailIsValid && !tokenIsValid && (
-              <ResetPasswordForm
-                errorMessage={errorMessage}
-                validMessage={validMessage}
-                onRequestPasswordReset={onRequestPasswordReset}
-              />
-            )}
-            {emailIsValid && (
-              <VerifyToken
-                errorMessage={errorMessage}
-                validMessage={validMessage}
-                onVerifyPasswordToken={onVerifyPasswordToken}
-                onGoBack={onGoBack}
-              />
-            )}
+      {!emailIsValid && !tokenIsValid && (
+        <ResetPasswordForm
+          errorMessage={errorMessage}
+          validMessage={validMessage}
+          onRequestPasswordReset={onRequestPasswordReset}
+        />
+      )}
+      {emailIsValid && (
+        <VerifyToken
+          errorMessage={errorMessage}
+          validMessage={validMessage}
+          onVerifyPasswordToken={onVerifyPasswordToken}
+          onGoBack={onGoBack}
+        />
+      )}
 
-            {tokenIsValid && (
-              <SetNewPassword
-                errorMessage={errorMessage}
-                validMessage={validMessage}
-                onSetNewPassword={onSetNewPassword}
-                token={token}
-                onGoBack={onGoBack}
-              />
-            )}
-          </div>
+      {tokenIsValid && (
+        <SetNewPassword
+          errorMessage={errorMessage}
+          validMessage={validMessage}
+          onSetNewPassword={onSetNewPassword}
+          token={token}
+          onGoBack={onGoBack}
+        />
+      )}
+
+      {isLoading && (
+        <div className="centered" style={{ marginTop: -320 }}>
+          <LoadingSpinner />
         </div>
-      </div>
+      )}
     </Fragment>
   );
 };

@@ -64,62 +64,45 @@ const LoginForm = () => {
 
   return (
     <Fragment>
-      <div className="col-12 col-lg-6">
-        <div className="container">
-          <div className="row">
-            <div className={classes.regheade}>
-              <h4>Login Here</h4>
-              <p>Login as a User</p>
-              {errorData}
-              <form onSubmit={loginHandler}>
-                <Form.Group>
-                  <Form.Control
-                    type="text"
-                    value={username}
-                    onChange={usernameHandler}
-                    placeholder="Enter Username"
-                    style={{
-                      marginBottom: 10,
-                    }}
-                  />
-                </Form.Group>
+      <div className="col-10 col-lg-4 col-md-6">
+        <div className={classes.formBorder}>
+          <h4 className={classes.loginFormHeader}>Login Here</h4>
+          {errorData}
+          <form onSubmit={loginHandler}>
+            <Form.Group>
+              <Form.Control
+                type="text"
+                value={username}
+                onChange={usernameHandler}
+                placeholder="Enter Username"
+                style={{
+                  marginBottom: 10,
+                }}
+              />
+            </Form.Group>
 
-                <Form.Group>
-                  <Form.Control
-                    type="password"
-                    value={password}
-                    onChange={passwordHandler}
-                    placeholder="Password"
-                    style={{
-                      marginBottom: 10,
-                    }}
-                  />
-                </Form.Group>
-                <div className="form-group">
-                  <button
-                    className="btn btn-success"
-                    style={{ display: "inline" }}
-                  >
-                    Login
-                  </button>
-                  <p
-                    className="log"
-                    style={{
-                      display: "inline",
-                      marginLeft: 11,
-                      fontSize: "15px",
-                    }}
-                  >
-                    Dont' have an Account?{" "}
-                    <NavLink className="mr-5" to={"/register"}>
-                      Sign Up
-                    </NavLink>
-                    <NavLink to={"/password-reset"}>Forgot password</NavLink>
-                  </p>
-                </div>
-              </form>
+            <Form.Group>
+              <Form.Control
+                type="password"
+                value={password}
+                onChange={passwordHandler}
+                placeholder="Password"
+                style={{
+                  marginBottom: 10,
+                }}
+              />
+            </Form.Group>
+
+            <button className="btn btn-success">Login</button>
+            <div className={classes.formTextWrapper}>
+              <NavLink className={classes.formText1} to={"/register"}>
+                Sign Up
+              </NavLink>
+              <NavLink className={classes.formText2} to={"/password-reset"}>
+                Forgot password
+              </NavLink>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </Fragment>

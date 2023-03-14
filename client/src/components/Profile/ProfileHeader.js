@@ -30,7 +30,7 @@ const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
   const [friendIsPending, setFriendIsPending] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [userAlreadySentRequest, setUserAlreadySentRequest] = useState(false);
-  const [userMessagingId, setUserMessagingId] = useState("")
+  const [userMessagingId, setUserMessagingId] = useState("");
   const { requestSuccess } = useSelector((state) => state.request);
 
   const onShowModal = () => {
@@ -79,8 +79,10 @@ const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
 
   const onGetUserFriends = async () => {
     const friends = await getAllUserFriends();
-    const currentFriendProfile = friends.find((friend) => friend.username === currentUserProfile.username)
-    setUserMessagingId(currentFriendProfile.messagingId)
+    const currentFriendProfile = friends.find(
+      (friend) => friend.username === currentUserProfile.username
+    );
+    setUserMessagingId(currentFriendProfile.messagingId);
     const userIsFriend = friends.find(
       (friend) => friend.username === currentUserProfile.username
     );
@@ -89,9 +91,6 @@ const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
       setFriendIsPending(false);
     }
   };
-
-
-
 
   const onGetSentRequest = async () => {
     const sentRequest = await getUserSentRequest(user);
@@ -164,7 +163,7 @@ const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
       if (response) {
         dispatch(showAboutPage());
       }
-    } catch (error) { }
+    } catch (error) {}
   };
 
   const handleMouseOver = async () => {
@@ -208,7 +207,10 @@ const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
     <li className="px-3 d-inline font-semibold text-gray-600">
       {/* <a href="#">Send Message</a>{" "} */}
 
-      <NavLink className="text-center text-blue-700 font-semibold" to={`/rooms/${userMessagingId}`}>
+      <NavLink
+        className="text-center text-blue-700 font-semibold"
+        to={`/rooms/${userMessagingId}`}
+      >
         {" "}
         Message
       </NavLink>
@@ -256,7 +258,10 @@ const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
               </div>
               {/* // INFOS */}
               <div className="flex justify-center flex-col mt-5 mb-3.5">
-                <h1 className="text-center font-bold text-3xl">
+                <h1
+                  className="text-center font-bold text-3xl"
+                  style={{ color: "black" }}
+                >
                   <strong> {currentUserProfile.name}</strong>(
                   {currentUserProfile.username})
                 </h1>

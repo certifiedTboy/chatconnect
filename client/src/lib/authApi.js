@@ -84,7 +84,7 @@ export const requestPasswordRest = async (userData) => {
 
     return data;
   } catch (error) {
-    return error;
+    return { error: "something went wrong" };
   }
 };
 
@@ -107,7 +107,9 @@ export const verifyPasswordToken = async (tokenData) => {
     }
 
     return data;
-  } catch (error) {}
+  } catch (error) {
+    return { error: "something went wrong" };
+  }
 };
 
 export const setNewPassword = async (passwordData) => {
@@ -129,5 +131,7 @@ export const setNewPassword = async (passwordData) => {
     }
 
     return data;
-  } catch (error) {}
+  } catch (error) {
+    return { error: "something went wrong" };
+  }
 };

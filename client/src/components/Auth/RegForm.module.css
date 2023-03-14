@@ -1,6 +1,3 @@
-.form {
-  position: relative;
-}
 
 .loading {
   position: absolute;
@@ -12,59 +9,40 @@
   align-items: center;
 }
 
-.control {
-  margin-bottom: 0.5rem;
-}
 
-.control label {
-  font-weight: bold;
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
-.control input,
-.control textarea {
-  font: inherit;
-  padding: 0.35rem;
-  border-radius: 4px;
-  background-color: #f0f0f0;
-  border: 1px solid #c1d1d1;
-  display: block;
+button {
   width: 100%;
-  font-size: 1.25rem;
+  font-weight: 700;
 }
 
-.control input:focus,
-.control textarea:focus {
-  background-color: #cbf8f8;
-  outline-color: teal;
+.formBorder {
+  padding: 0px 0px 10px 10px;
+  box-shadow: -5px 5px rgb(220, 235, 240);
 }
-
-.actions {
-  text-align: right;
-}
-
-.actions button {
-  font-size: 1.25rem;
-}
-section {
-  margin-top: 80px;
+.loginFormHeader {
+  font-weight: 700;
   margin-bottom: 50px;
+  margin-top: 20%;
 }
 
-section img {
-  width: 100%;
-  opacity: 0.4;
+.regFormHeader {
+  font-weight: 700;
+  margin-bottom: 30px;
 }
 
-.input {
-  width: 98%;
+.formTextWrapper {
+  margin-top: 10px;
+  margin-bottom: 30px;
 }
 
-.regheader {
-  box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+
+.formText1 {
+  font-weight: 600;
+  font-size: 15px;
 }
 
-#form-contro {
-  width: 98%;
+.formText2 {
+  font-weight: 600;
+  float:right;
+  font-size: 15px;
 }

@@ -105,10 +105,8 @@ exports.signin = async (req, res) => {
 
 exports.resetPasswordRequest = async (req, res) => {
   const { email } = req.body;
-  console.log(email);
   try {
     const user = await User.findOne({ email });
-    console.log(user);
     if (!user) {
       return res
         .status(400)
@@ -117,7 +115,7 @@ exports.resetPasswordRequest = async (req, res) => {
       const generatedToken = await createPasswordResetCode(user._id);
 
       if (!generatedToken.error) {
-        await sendPasswordResetToken(user.email, user.name, generatedToken);
+        // await sendPasswordResetToken(user.email, user.name, generatedToken);
         return res.status(200).json({ message: "success" });
       }
     }

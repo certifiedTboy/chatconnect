@@ -42,62 +42,64 @@ const SetNewPassword = ({
 
   return (
     <Fragment>
-      <div className={classes.regheade}>
-        {validMessage.length > 0 && (
-          <div>
-            <Alert variant="info">{validMessage}</Alert>
-          </div>
-        )}
+      <div className="col-10 col-lg-4 col-md-6">
+        <div className={classes.regheade}>
+          {validMessage.length > 0 && (
+            <div>
+              <Alert variant="info">{validMessage}</Alert>
+            </div>
+          )}
 
-        {errorMessage.length > 0 && (
-          <div>
-            <Alert variant="danger">{errorMessage}</Alert>
-          </div>
-        )}
+          {errorMessage.length > 0 && (
+            <div>
+              <Alert variant="danger">{errorMessage}</Alert>
+            </div>
+          )}
 
-        <form onSubmit={setNewPasswordHandler}>
-          <Form.Group>
-            <Form.Control
-              type="password"
-              value={newPassword}
-              onChange={newPasswordInputHandler}
-              placeholder="Enter new password"
-              style={{
-                marginBottom: 10,
-              }}
-            />
-          </Form.Group>
+          <form onSubmit={setNewPasswordHandler}>
+            <Form.Group>
+              <Form.Control
+                type="password"
+                value={newPassword}
+                onChange={newPasswordInputHandler}
+                placeholder="Enter new password"
+                style={{
+                  marginBottom: 10,
+                }}
+              />
+            </Form.Group>
 
-          <Form.Group>
-            <Form.Control
-              type="password"
-              value={newConfirmPassword}
-              onChange={confirmNewPasswordInputHandler}
-              placeholder="Re-enter password"
-              style={{
-                marginBottom: 10,
-              }}
-            />
-          </Form.Group>
+            <Form.Group>
+              <Form.Control
+                type="password"
+                value={newConfirmPassword}
+                onChange={confirmNewPasswordInputHandler}
+                placeholder="Re-enter password"
+                style={{
+                  marginBottom: 10,
+                }}
+              />
+            </Form.Group>
 
-          <div className="form-group">
-            <button className="btn btn-success" style={{ display: "inline" }}>
-              Reset Password
-            </button>
+            <div className="form-group">
+              <button className="btn btn-success" style={{ display: "inline" }}>
+                Reset Password
+              </button>
 
-            <p
-              style={{
-                display: "inline",
-                marginLeft: 11,
-                fontSize: "15px",
-              }}
-            >
-              <NavLink onClick={onGoBack} to={"/login"}>
-                Go back
-              </NavLink>
-            </p>
-          </div>
-        </form>
+              <div className={classes.formTextWrapper}>
+                <p>
+                  <NavLink
+                    onClick={onGoBack}
+                    className={classes.formText1}
+                    to={"/login"}
+                  >
+                    back to login
+                  </NavLink>
+                </p>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
     </Fragment>
   );
