@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:3001"
+const API_URL = "http://localhost:3001";
 // const API_URL = "https://chatconnect-backend-production.up.railway.app"
 
 export const getCurrentUser = () => {
@@ -38,17 +38,14 @@ export const getCurrentUserFromServer = async () => {
 export const getUserProfile = async (username) => {
   const token = localStorage.getItem("accessJWT");
   try {
-    const response = await fetch(
-      `${API_URL}/user/userprofile/${username}`,
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "auth-token": `${token}`,
-        },
-      }
-    );
+    const response = await fetch(`${API_URL}/user/userprofile/${username}`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "auth-token": `${token}`,
+      },
+    });
     const data = await response.json();
     if (!response.ok) {
       return data.message;
@@ -82,7 +79,6 @@ export const getAllProfiles = async () => {
 
 export const uploadImage = async (fileData) => {
   const token = localStorage.getItem("accessJWT");
-  console.log(fileData)
   let { image } = fileData;
   const formData = new FormData();
   formData.append("image", image);
@@ -107,37 +103,87 @@ export const uploadImage = async (fileData) => {
   }
 };
 
-export const updateAbout = async (about) => {
+export const updateUserAbout = async (aboutData) => {
   const token = localStorage.getItem("accessJWT");
-  const data = {
-    about,
-  };
-
-  const response = await fetch(
-    `${API_URL}/users/profile/about/update`,
-    {
+  try {
+    const response = await fetch(`${API_URL}/about`, {
       method: "POST",
-      body: JSON.stringify(data),
+      body: JSON.stringify(aboutData),
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
         "auth-token": `${token}`,
       },
-    }
-  );
+    });
 
-  try {
     const data = await response.json();
+
     if (!response.ok) {
+      return data;
+    }
+
+    if (data.error) {
       return data;
     }
 
     return data;
   } catch (error) {
-    console.log(error);
+    return { error: "something when" };
   }
 };
 
+export const getUserAbout = async (username) => {
+  const token = localStorage.getItem("accessJWT");
+  try {
+    const response = await fetch(`${API_URL}/about/${username}`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "auth-token": `${token}`,
+      },
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      return data;
+    }
+    if (data.error) {
+      return data;
+    }
+
+    return data.userAbout;
+  } catch (error) {
+    return { error: "something went wrong" };
+  }
+};
+
+export const reactToUserAbout = async (reaction, aboutId) => {
+  const token = localStorage.getItem("accessJWT");
+  const reactionData = {
+    reaction,
+  };
+  try {
+    const response = await fetch(`${API_URL}/about/${aboutId}`, {
+      method: "POST",
+      body: JSON.stringify(reactionData),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "auth-token": `${token}`,
+      },
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      return data;
+    }
+    if (response.error) {
+      return data;
+    }
+    return data;
+  } catch (error) {
+    return { error: "something went wrong" };
+  }
+};
 // export const commentToAbout = async (username, text) => {
 //   const token = localStorage.getItem("accessJWT");
 //   const commentData = {
@@ -170,17 +216,14 @@ export const updateAbout = async (about) => {
 export const searchUsers = async (searchValue) => {
   const token = localStorage.getItem("accessJWT");
   try {
-    const response = await fetch(
-      `${API_URL}/search/${searchValue}`,
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "auth-token": `${token}`,
-        },
-      }
-    );
+    const response = await fetch(`${API_URL}/search/${searchValue}`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "auth-token": `${token}`,
+      },
+    });
     if (!response.ok) {
       return response.error;
     }

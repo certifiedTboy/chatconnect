@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import RoomsLists from "../components/rooms/RoomsList";
+import { createConnection } from "../components/Auth/LoginActions";
 import { fetchRooms } from "../lib/roomApi";
 
 const Rooms = () => {
@@ -7,6 +9,10 @@ const Rooms = () => {
   const [roomError, setRoomError] = useState("");
   const [roomDataLoading, setRoomDataLoading] = useState(false);
 
+  // do something
+  const { userOnline } = useSelector((state) => state.login);
+
+  const dispatch = useDispatch();
   const fetchAvaialbleRooms = async () => {
     setRoomDataLoading(true);
     try {
@@ -25,6 +31,7 @@ const Rooms = () => {
   };
 
   useEffect(() => {
+    dispatch(createConnection());
     fetchAvaialbleRooms();
   }, []);
   return (

@@ -21,7 +21,7 @@ const ResetPasswordForm = ({ onRequestPasswordReset, errorMessage }) => {
 
   return (
     <Fragment>
-      <div className="col-10 col-lg-4 col-md-6">
+      <div className={`col-10 col-lg-4 col-md-6 ${classes.formBorder}`}>
         <h4 className={classes.loginFormHeader}>
           Enter email to reset password
         </h4>

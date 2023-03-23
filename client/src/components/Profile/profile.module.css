@@ -1,0 +1,31 @@
+.profilePicture{
+    margin: 180px auto !important;
+    width: 168px; 
+    height: 168px;
+}
+
+.profileUsername {
+    font-size: 20px;
+}
+
+.imgUpload {
+    position: relative;
+    
+
+}
+
+.imgUpload img {
+    width: 40px; 
+    height: 40px;
+    margin: -210px auto 200px; 
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.imgUpload input {
+    width: 50px;
+    height: 50px;
+    margin: -250px auto; 
+    opacity: 0.0;
+    border-radius: 50%;
+}

@@ -1,3 +1,35 @@
+ 
+ .file-upload-main {
+  margin-top: 150px; 
+  margin-bottom: 150px
+ }
+
+ .file-upload-main span{
+  color: rgb(0, 146, 0)
+ }
+
+ .image-upload {
+  margin: 10px auto;
+ }
+ 
+ .image-upload img {
+  height: 200px; 
+  width: 200px;
+  margin: 0px auto 0px; 
+ }
+ 
+ .error-message {
+  color: rgb(161, 1, 1)
+ }
+
+ .upload-label {
+  font-weight: 700;
+ }
+ .upload-link {
+  color: rgb(5, 5, 143);
+  font-weight: 700;
+ }
+
  .custom-drop-file{
       position: relative;
       padding: 24px 16px;
@@ -29,6 +61,17 @@
 
     .display{
       display: none;
+    }
+
+    .upload-button {
+      margin: 10px auto;
+    }
+
+    .image-capture {
+      border-radius:100%;
+      background: rgb(165, 0, 0);
+      height: 50px;
+      width: 50px;
     }
 
     #img-preview {

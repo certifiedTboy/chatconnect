@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 // import classes from "../RegForm.module.css";
 import OtpField from "react-otp-field";
@@ -10,6 +10,7 @@ const VerifyToken = ({
   validMessage,
   onVerifyPasswordToken,
   onGoBack,
+  onClearErrorMessage,
 }) => {
   const [token, setToken] = useState("");
 
@@ -29,6 +30,12 @@ const VerifyToken = ({
     verifyPasswordTokenHandler();
   }
 
+  const tokenLength = token.trim().length === 5;
+
+  useEffect(() => {
+    onClearErrorMessage();
+  }, [tokenLength]);
+
   return (
     <Fragment>
       <div className="col-10 col-lg-4 col-md-6">
@@ -45,19 +52,18 @@ const VerifyToken = ({
             </div>
           )}
 
-          <Form>
-            <OtpField
-              value={token}
-              onChange={setToken}
-              numInputs={6}
-              onChangeRegex={/^([0-9]{0,})$/}
-              autoFocus
-              isTypeText
-              inputProps={{
-                className: `${classes.inp}`,
-              }}
-            />
-          </Form>
+          <OtpField
+            className={classes.otpInput}
+            value={token}
+            onChange={setToken}
+            numInputs={6}
+            onChangeRegex={/^([0-9]{0,})$/}
+            autoFocus
+            isTypeText
+            inputProps={{
+              className: `${classes.inp}`,
+            }}
+          />
         </div>
         <div className={classes.formTextWrapper}>
           <p>

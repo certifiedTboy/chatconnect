@@ -57,8 +57,6 @@ const MainNavigation = () => {
     setSearchUsersFailed("");
   };
 
-
-
   // search side effect handler
   useEffect(() => {
     const onSearchUsers = async () => {
@@ -67,7 +65,6 @@ const MainNavigation = () => {
         if (!response || response.length === 0 || response.error) {
           setSearchUsersFailed(response.error);
         } else {
-
           setSearchedUsers(response);
         }
       } catch (error) {
@@ -83,28 +80,28 @@ const MainNavigation = () => {
     };
   }, [searchdata]);
 
-
   const getUserFriendsRequest = useCallback(async () => {
     const profile = await getUserProfile(user);
     setProfilePicture(profile.profile.profilePicture);
     setFriendRequests(profile.request || []);
-  }, [user])
+  }, [user]);
 
-
-
-  const onAcceptRequest = useCallback(async (event) => {
-    dispatch(pendingRequest());
-    try {
-      const response = await acceptRequest(event.target.value);
-      if (response.message !== "success") {
+  const onAcceptRequest = useCallback(
+    async (event) => {
+      dispatch(pendingRequest());
+      try {
+        const response = await acceptRequest(event.target.value);
+        if (response.message !== "success") {
+          dispatch(failedRequest());
+        } else {
+          dispatch(successRequest());
+        }
+      } catch (error) {
         dispatch(failedRequest());
-      } else {
-        dispatch(successRequest());
       }
-    } catch (error) {
-      dispatch(failedRequest());
-    }
-  }, [dispatch]);
+    },
+    [dispatch]
+  );
 
   const onRejectRequest = useCallback((event) => {
     cancelRequest(event.target.value);
@@ -120,8 +117,6 @@ const MainNavigation = () => {
     requestSuccess,
   ]);
 
-
-
   let searchResult = <div></div>;
 
   if (!searchdata || searchdata.trim().length === 0) {
@@ -135,7 +130,8 @@ const MainNavigation = () => {
         {user.profile ? (
           <img
             className={styles.searchImg}
-            src={`http://localhost:3001/${user.profile.profilePicture}`} alt="user profile pic"
+            src={`http://localhost:3001/${user.profile.profilePicture}`}
+            alt="user profile pic"
           />
         ) : (
           <img src="" alt="user profile pic" />

@@ -42,7 +42,7 @@ const SetNewPassword = ({
 
   return (
     <Fragment>
-      <div className="col-10 col-lg-4 col-md-6">
+      <div className={`col-10 col-lg-4 col-md-6 ${classes.formBorder}`}>
         <div className={classes.regheade}>
           {validMessage.length > 0 && (
             <div>

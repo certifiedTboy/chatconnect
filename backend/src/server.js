@@ -13,6 +13,7 @@ const roomRoutes = require("./routes/roomsRoute");
 const authRoute = require("./routes/authRoute");
 const requestRoute = require("./routes/requestRoute");
 const userRoute = require("./routes/userRoutes");
+const postRoute = require("./routes/postRoute");
 const messageFormat = require("./utils/sockets/messages");
 const Room = require("./models/rooms");
 const Chat = require("./models/chat");
@@ -38,9 +39,9 @@ app.use("/", userRoute);
 app.use("/", roomRoutes);
 app.use("/", authRoute);
 app.use("/", requestRoute);
+app.use("/", postRoute);
 
 app.use(express.static(path.join(__dirname, "..", "public")));
-
 
 const startServer = async () => {
   await mongoConnect();

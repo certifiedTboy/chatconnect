@@ -1,27 +1,45 @@
 import React, { useState } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Button } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { uploadImage } from "../lib/userApi";
+import ImageUpload from "../components/ProfileUpload/ImageUpload";
+import LiveCam from "../components/ProfileUpload/LiveCam";
 import LoadingSpinner from "../components/UI/LoadingSpinner";
 import "./ProfileUpload.css";
 
 const ProfileUpload = () => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.login);
-  const [image, setImage] = useState();
+  const [prevImage, setPrevImage] = useState("");
   const [loading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [toggleUploadMethod, setToggleUploadMethod] = useState();
+  const [hideButton, setHideButton] = useState(false);
 
-  const onSelectImage = (e) => {
-    setImage(e.target.files[0]);
+  const selectLiveCamUploadMethod = () => {
+    setHideButton(true);
+    setToggleUploadMethod(false);
+  };
+  const selectImageUploadMethod = () => {
+    setHideButton(true);
+    setToggleUploadMethod(true);
   };
 
+  const onCancelButton = () => {
+    setHideButton(false);
+    setToggleUploadMethod();
+    setErrorMessage("");
+  };
 
-  const onUploadImage = async () => {
+  const onPreviewImage = (image) => {
+    setPrevImage(image);
+  };
+
+  const onUploadImage = async (image) => {
     setIsLoading(true);
     if (!image) {
-      setErrorMessage("No Image Selected");
+      setErrorMessage("Please select an image");
       setIsLoading(false);
       return;
     }
@@ -31,6 +49,7 @@ const ProfileUpload = () => {
       image.type !== "image/jpeg"
     ) {
       setErrorMessage("Only images are allowed");
+      setIsLoading(false);
       return;
     }
     let fileData = {
@@ -46,65 +65,82 @@ const ProfileUpload = () => {
         navigate("/rooms");
       }
     } catch (error) {
+      setIsLoading(false);
       setErrorMessage(error);
     }
   };
 
   return (
-    <Container style={{ marginTop: "200px", marginBottom: "150px" }}>
+    <Container className="file-upload-main">
       <Row>
         <Col md={4}></Col>
         <Col md={4}>
           <label className="text-center">
             <strong> Profile Picture</strong>
             <br /> <br />
-            <span style={{ color: "rgb(0, 146, 0)" }}>
+            <span>
               You look safer to chat with when you have a nice profile picture
             </span>{" "}
-            <br /> <br />
+            {/* <br /> <br /> */}
           </label>
-          <div style={{ margin: "0 auto" }}>
-            <div id="img-preview"><img src={`${image ? image.name : ""}`} alt="file to be uploaded" /></div>
+          <div className="image-upload">
+            {prevImage && (
+              <img
+                className={`rounded-full inset-x-96 border-4 border-green`}
+                src={prevImage}
+                alt="file to be uploaded"
+              />
+            )}
           </div>
 
           <div className="file-upload-content">
             <div className="text-center">
-              <p style={{ color: "red" }} id="para"></p>
+              {errorMessage && <p className="error-message">{errorMessage}</p>}
             </div>
             <div className="centered">{loading && <LoadingSpinner />}</div>
-            <div className="form-group custom-drop-file text-center">
-              <input
-                type="file"
-                className="form-control file"
-                id="choose-file"
-                accept="image/*"
-                name="picss"
-                onChange={onSelectImage}
-                style={{ width: "150px" }}
-                multiple
-              />
-              <p>Upload Picture</p>
-            </div>
-            <div className="form-group text-center">
-              {" "}
-              <br /> <br />
-              {errorMessage && <p>{errorMessage}</p>}
-              <button
-                className="btn btn-success "
-                id="display2"
-                onClick={onUploadImage}
-              >
-                Upload
-              </button>
+
+            <div>
+              {toggleUploadMethod === false && (
+                <LiveCam
+                  onPreviewImage={onPreviewImage}
+                  onUploadImage={onUploadImage}
+                  onCancelButton={onCancelButton}
+                />
+              )}
+              {toggleUploadMethod === true && (
+                <ImageUpload
+                  onPreviewImage={onPreviewImage}
+                  onUploadImage={onUploadImage}
+                  onCancelButton={onCancelButton}
+                />
+              )}
             </div>
           </div>
+          {hideButton === false && (
+            <div className="text-center">
+              <button
+                onClick={selectLiveCamUploadMethod}
+                className="btn btn-success"
+              >
+                Live Cam
+              </button>{" "}
+              <button
+                onClick={selectImageUploadMethod}
+                className="btn btn-success"
+              >
+                Image Upload
+              </button>
+            </div>
+          )}
           {/* </form> */}
           <br />
           <br />
           <div className="text-center">
             <p>
-              <NavLink to="/rooms">Skip</NavLink> and upload profile picture
-              later
+              <NavLink className={`upload-link`} to="/rooms">
+                Skip
+              </NavLink>{" "}
+              to upload profile picture later
             </p>
           </div>
         </Col>

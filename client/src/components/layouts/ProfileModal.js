@@ -1,52 +1,59 @@
 import React, { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import { useSelector, useDispatch } from "react-redux";
 import Form from "react-bootstrap/Form";
-import { updateAbout } from "../../lib/userApi";
-import {
-  pendingRequest,
-  successRequest,
-  failedRequest,
-} from "../Profile/requestRedux/requestSlice";
-const ProfileModal = ({ show, onHideModal, currentUserProfile }) => {
-  const dispatch = useDispatch();
-  // const [show, setShow] = useState(false);
-  const [about, setAbout] = useState("");
-  const { requestSuccess } = useSelector((state) => state.request);
-  const onUpdateUserAbout = async (event) => {
-    dispatch(pendingRequest());
-    try {
-      const response = await updateAbout(about);
-      if (response.pending) {
-        dispatch(pendingRequest());
-      }
-      if (response.message === "success") {
-        dispatch(successRequest());
-        setAbout("");
-        onHideModal();
-      }
-    } catch (error) {
-      dispatch(failedRequest());
-    }
-  };
+import {updateUserAbout} from "../../lib/userApi"
+import LoadingSpinner from "../UI/LoadingSpinner"
 
-  const handleAboutChangeHandler = (event) => {
+const ProfileModal = ({ show, onHideModal }) => {
+  const [about, setAbout] = useState("");
+  const [isLoading, setIsLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
+
+  const aboutChangeHandler = (event) => {
     setAbout(event.target.value);
   };
 
   const handleClose = () => {
     onHideModal();
   };
-  // const handleShow = () => setShow(true);
+
+  const onUpdateUserAbout = async () => {
+    const userAboutData = {
+      text:about
+    }
+    setIsLoading(true)
+    
+    try{
+      const response = await updateUserAbout(userAboutData);
+      if(response.error){
+        setIsLoading(false)
+        setErrorMessage(response.error)
+      }
+      if(response.message === "success"){
+        setIsLoading(false)
+        handleClose()
+      }
+
+    }catch(error){
+setErrorMessage("something went wrong")
+    }
+   
+    }
+  
+
   return (
     <>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>
-            <strong> Edit Profile </strong>
+            <strong> Write about yourself </strong>
           </Modal.Title>
         </Modal.Header>
+        {isLoading && <div style={{margin:"10px auto"}}>
+        <LoadingSpinner/>
+        </div>}
+        
         <Modal.Body>
           <Form>
             <Form.Group
@@ -55,7 +62,7 @@ const ProfileModal = ({ show, onHideModal, currentUserProfile }) => {
             >
               <Form.Label>About</Form.Label>
               <Form.Control
-                onChange={handleAboutChangeHandler}
+                onChange={aboutChangeHandler}
                 value={about}
                 as="textarea"
                 rows={6}

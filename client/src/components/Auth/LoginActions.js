@@ -1,5 +1,12 @@
-import { loginFail, loginPending, loginSuccess } from "./loginSlice";
+import {
+  loginFail,
+  loginPending,
+  loginSuccess,
+  activeUser,
+} from "./loginSlice";
 import { userLogin } from "../../lib/authApi";
+
+const API_URL = "http://localhost:3001";
 
 export const newUserLogin = (frmDt) => async (dispatch) => {
   try {
@@ -19,4 +26,8 @@ export const newUserLogin = (frmDt) => async (dispatch) => {
   } catch (error) {
     dispatch(loginFail({ error: "Server Error" }));
   }
+};
+
+export const createConnection = (user) => async (dispatch) => {
+  await dispatch(activeUser(user));
 };

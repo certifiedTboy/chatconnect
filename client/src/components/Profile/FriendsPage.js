@@ -3,82 +3,56 @@ import { useParams } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-const FriendsPage = ({ friendsList }) => {
+const FriendsPage = ({ friendUsername, friendProfilePicture }) => {
   const { user } = useSelector((state) => state.login);
   const params = useParams();
   const { username } = params;
 
   const noFriendContentForCurrentUser = (
-    <>
-      <div className="col-4"></div>{" "}
-      <div className="col-4">
-        {" "}
-        <h1
-          style={{
-            fontSize: "40px",
-            textAlign: "center",
-            margin: "70px auto",
-          }}
-        >
-          You currently do not have a friend
-        </h1>{" "}
-      </div>{" "}
-      <div className="col-4"> </div>{" "}
-    </>
+    <h1
+      style={{
+        fontSize: "40px",
+        textAlign: "center",
+        margin: "70px auto",
+      }}
+    >
+      You currently do not have a friend
+    </h1>
   );
 
   const noFriendContentForOtherUser = (
-    <>
-      <div className="col-4"></div>{" "}
-      <div className="col-4">
-        {" "}
-        <h1
-          style={{
-            fontSize: "40px",
-            textAlign: "center",
-            margin: "70px auto",
-          }}
-        >
-          User does not have friends
-        </h1>{" "}
-      </div>{" "}
-      <div className="col-4"> </div>{" "}
-    </>
+    <h1
+      style={{
+        fontSize: "40px",
+        textAlign: "center",
+        margin: "70px auto",
+      }}
+    >
+      User does not have friends
+    </h1>
   );
 
   const friendContent = (
-    <>
-      <div className="container">
-        <div className="row">
-          {friendsList.map((friend) => {
-            return (
-              <div className="col-4">
-                <div className="bg-white p-1">
-                  <img
-                    src={`http://localhost:3001/${friend.profilePicture}`}
-                    className="w-24 h-24 rounded-md  cursor-pointer"
-                  />
-                  <NavLink to={`/user/userprofile/${friend.user.username}`}>
-                    <p style={{ fontWeight: "600" }}>{friend.user.username}</p>
-                  </NavLink>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </>
+    <div className="bg-white p-1">
+      <img
+        src={`http://localhost:3001/${friendProfilePicture}`}
+        className="w-24 h-24 rounded-md  cursor-pointer"
+      />
+      <NavLink to={`/user/userprofile/${friendUsername}`}>
+        <p style={{ fontWeight: "600" }}>{friendUsername}</p>
+      </NavLink>
+    </div>
   );
 
   return (
     <div className="mt-5">
-      {user === username &&
+      {/* {user === username &&
         friendsList.length === 0 &&
         noFriendContentForCurrentUser}
       {user !== username &&
         friendsList.length === 0 &&
-        noFriendContentForOtherUser}
-      {friendsList.length > 0 && friendContent}
+        noFriendContentForOtherUser} */}
+      {friendContent}
     </div>
   );
 };

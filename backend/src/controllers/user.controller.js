@@ -56,6 +56,7 @@ exports.getAllProfiles = async (req, res) => {
 exports.uploadProfilePicture = async (req, res) => {
   const userId = req.user.id;
   const x = "uploads/" + req.file.filename;
+
   try {
     const user = await User.findById(userId);
     const profileId = user.profile._id;
@@ -67,14 +68,14 @@ exports.uploadProfilePicture = async (req, res) => {
       },
     });
     if (!profile) {
-      return res.json({ message: "Something went wrong" });
+      return res.json({ error: "Something went wrong" });
     }
     profile.save();
     user.profile = profile;
     user.save();
-    res.json({ msg: "success" });
+    res.json({ message: "success" });
   } catch (error) {
-    res.status(500).json({ message: "something went wrong" });
+    res.status(500).json({ error: "something went wrong" });
   }
 };
 
@@ -92,22 +93,6 @@ exports.updateUser = async (req, res) => {
         return res.status(200).json({ message: "success" });
       }
     );
-  } catch (error) {
-    res.status(400).json({ error: "something went wrong" });
-  }
-};
-
-exports.updateUserAbout = async (req, res) => {
-  const userId = req.user.id;
-  const { about } = req.body;
-  try {
-    const updateUser = await User.findById(userId);
-    updateUser.about = about;
-    await updateUser.save();
-    if (!updateUser) {
-      res.status(400).json({ error: "something went wrong" });
-    }
-    res.status(200).json({ message: "success", updateUser });
   } catch (error) {
     res.status(400).json({ error: "something went wrong" });
   }

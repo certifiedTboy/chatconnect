@@ -8,6 +8,7 @@ import {
   cancelRequest,
   getUserRequests,
 } from "../../lib/requestApi";
+import { uploadImage } from "../../lib/userApi";
 import { getUserProfile } from "../../lib/userApi";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -16,14 +17,15 @@ import {
   failedRequest,
 } from "./requestRedux/requestSlice";
 import { showAboutPage, loadingPage } from "./profileActions";
-import Button from "react-bootstrap/Button";
 import { NavLink, useParams } from "react-router-dom";
+import classes from "./profile.module.css";
+import camera from "../../assets/camera.png";
 
 const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
   const dispatch = useDispatch();
   const params = useParams();
   const username = params.username;
-  const { user } = useSelector((state) => state.login);
+  const { user, userOnline } = useSelector((state) => state.login);
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [friendInclude, setFriendInclude] = useState(false);
@@ -32,6 +34,37 @@ const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
   const [userAlreadySentRequest, setUserAlreadySentRequest] = useState(false);
   const [userMessagingId, setUserMessagingId] = useState("");
   const { requestSuccess } = useSelector((state) => state.request);
+
+  const onSelectFile = async (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const image = e.target.files[0];
+      if (!image) {
+        return;
+      }
+
+      if (
+        image.type !== "image/png" &&
+        image.type !== "image/jpg" &&
+        image.type !== "image/jpeg"
+      ) {
+        return;
+      }
+      let fileData = {
+        user,
+        image,
+      };
+
+      try {
+        const response = await uploadImage(fileData);
+        setIsLoading(true);
+        if (response === 200) {
+          console.log(response);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
 
   const onShowModal = () => {
     setShowModal(true);
@@ -177,7 +210,7 @@ const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
   const addFriendActionButton = (
     <li className="px-3 d-inline font-semibold text-gray-600">
       <a href="#" disabled={isLoading} onClick={sendFriendRequest}>
-        {isLoading ? "Loading…" : "Add Friend"}
+        {isLoading ? "Loading…" : "Add"}
       </a>
     </li>
   );
@@ -185,7 +218,7 @@ const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
   const removeFriendActionButton = (
     <li className="px-3 d-inline font-semibold text-gray-600">
       <a href="#" disabled={isLoading} onClick={removeUserAsFriend}>
-        {isLoading ? "Loading…" : "Remove Friend"}
+        {isLoading ? "Loading…" : "Unfriend"}
       </a>
     </li>
   );
@@ -218,124 +251,96 @@ const ProfileHeader = ({ currentUserProfile, userprofilePicture }) => {
   );
 
   return (
-    <>
-      <ProfileModal
-        show={showModal}
-        onHideModal={hideModal}
-        currentUserProfile={currentUserProfile}
-      />
-      <div className="container">
-        <div className="row">
-          <div className="col-12">
-            <div>
-              <div
-                className=" w-full flex justify-center w-200"
-                style={{ height: "348px" }}
-              >
-                <div className="row">
-                  <div className="col-4">
-                    <div className="flex flex-col">
-                      <div
-                        className="relative bg-gray-100 md:rounded-bl-lg md:rounded-br-lg
+    <div className="col-12">
+      <ProfileModal show={showModal} onHideModal={hideModal} />
+
+      <div
+        className="row bg-gray-100 md:rounded-bl-lg md:rounded-br-lg
                         bg-gradient-to-b from-gray-100 via-gray-100 to-gray-400"
-                        style={{ width: "940px", height: "348px" }}
-                      >
-                        {/* // cover photo */}
-                        <div className="">
-                          {/* profile photo */}
-                          <div>
-                            <img
-                              src={`http://localhost:3001/${userprofilePicture}`}
-                              className="rounded-full absolute top-48 inset-x-96 border-4 border-white w-40 h-40"
-                              style={{ width: "168px", height: "168px" }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* // INFOS */}
-              <div className="flex justify-center flex-col mt-5 mb-3.5">
-                <h1
-                  className="text-center font-bold text-3xl"
-                  style={{ color: "black" }}
-                >
-                  <strong> {currentUserProfile.name}</strong>(
-                  {currentUserProfile.username})
-                </h1>
-                <a href="#" className="text-center text-blue-700 font-semibold">
-                  Add Bio
-                </a>
-                <hr className="full flex self-center w-2/3 mt-2" />
-              </div>
-              {/* // END INFOS */}
-              {/* // TABS */}
-              <div className="w-full flex justify-center">
-                <div className="flex justify-between mb-2.5">
-                  <ul className="flex px-5 py-1.5">
-                    {/* <li className="px-3 font-semibold text-gray-600">
-              <a href="#">Posts</a>
-            </li> */}
-                    <li className="px-3 font-semibold text-gray-600">
-                      <a onClick={aboutPage} href="#">
-                        About
-                      </a>
-                    </li>
+        style={{ width: "100%", height: "348px" }}
+      >
+        <div>
+          <img
+            src={`http://localhost:3001/${userprofilePicture}`}
+            className={`rounded-full inset-x-96 border-4 border-white ${classes.profilePicture}`}
+          />
+          <div className={classes.imgUpload}>
+            <img src={camera} />
 
-                    <li className="px-3 font-semibold text-gray-600">
-                      <a href="#">Photos</a>
-                    </li>
-
-                    <li className="px-3 font-semibold text-gray-600">
-                      {user === username && ""}
-                      {user !== username &&
-                        friendIsPending === false &&
-                        friendInclude === false &&
-                        addFriendActionButton}
-                      {user !== username &&
-                        friendIsPending === true &&
-                        friendInclude === false &&
-                        pendingFriendActionButton}
-
-                      {user !== username &&
-                        friendInclude === true &&
-                        friendIsPending === false &&
-                        removeFriendActionButton}
-
-                      {user !== username &&
-                        friendInclude === true &&
-                        friendIsPending === false &&
-                        sendMessageLink}
-                    </li>
-                  </ul>
-                  <ul className="flex mb:pl-14">
-                    {user === params.username && (
-                      <li className="px-2 font-semibold">
-                        <button
-                          className="bg-gray-200 px-5 py-1 rounded-lg text-black font-semibold"
-                          onClick={onShowModal}
-                        >
-                          <i className="bx bx-edit-alt mr-2 text-xl"></i>
-                          Edit Profile
-                        </button>
-                      </li>
-                    )}
-                    {/* <li className="px-2 font-semibold">
-                <button className="bg-gray-200 px-3 py-1 rounded-lg text-black font-semibold">
-                  ...
-                </button>
-              </li> */}
-                  </ul>
-                </div>
-              </div>
-              {/* // END TABS */}
-            </div>
+            <input
+              onInput={onSelectFile}
+              className="form-control"
+              accept="image/*"
+              type="file"
+              name="picss"
+            />
           </div>
         </div>
       </div>
-    </>
+
+      {/* // INFOS */}
+      <div className="flex justify-center flex-col mt-2 mb-3.5">
+        <h1
+          className="text-center font-bold text-3xl"
+          style={{ color: "black" }}
+        >
+          <strong> {currentUserProfile.name}</strong>
+          <p className={classes.profileUsername}>
+            ({currentUserProfile.username})
+          </p>
+        </h1>
+
+        <hr className="full flex self-center w-2/3 mt-2" />
+      </div>
+      {/* // END INFOS */}
+      {/* // TABS */}
+      <div className="w-full flex justify-center">
+        <div className="flex justify-between mb-2.5">
+          <ul className="flex px-5 py-1.5">
+            <li className="px-3 font-semibold text-gray-600">
+              <a onClick={aboutPage} href="#">
+                About
+              </a>
+            </li>
+
+            <li className="font-semibold text-gray-600">
+              {user === username && ""}
+              {user !== username &&
+                friendIsPending === false &&
+                friendInclude === false &&
+                addFriendActionButton}
+              {user !== username &&
+                friendIsPending === true &&
+                friendInclude === false &&
+                pendingFriendActionButton}
+
+              {user !== username &&
+                friendInclude === true &&
+                friendIsPending === false &&
+                removeFriendActionButton}
+
+              {user !== username &&
+                friendInclude === true &&
+                friendIsPending === false &&
+                sendMessageLink}
+            </li>
+          </ul>
+          <ul className="flex mb:pl-14">
+            {user === params.username && (
+              <li className="px-2 font-semibold">
+                <button
+                  className="bg-gray-200 px-5 py-1 rounded-lg text-black font-semibold"
+                  onClick={onShowModal}
+                >
+                  <i className="bx bx-edit-alt mr-2 text-xl"></i>
+                  Edit bio
+                </button>
+              </li>
+            )}
+          </ul>
+        </div>
+      </div>
+    </div>
   );
 };
 

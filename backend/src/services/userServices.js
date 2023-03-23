@@ -1,20 +1,20 @@
-const User = require("../models/user")
-
+const User = require("../models/user");
 
 const checkThatUserExist = async (username) => {
-    try {
-        const user = await User.findOne({ username })
+  const user = await User.findOne({ username });
+  if (user) {
+    return user;
+  }
+};
 
-        return user
-
-    } catch (error) {
-        throw new Error("something went wrong")
-    }
-}
-
-
-
+const checkThatUserExistById = async (userId) => {
+  const user = await User.findById(userId);
+  if (user) {
+    return user;
+  }
+};
 
 module.exports = {
-    checkThatUserExist
-}
+  checkThatUserExist,
+  checkThatUserExistById,
+};

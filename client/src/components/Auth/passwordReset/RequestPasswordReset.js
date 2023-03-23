@@ -135,6 +135,10 @@ const RequestPasswordReset = () => {
     localStorage.removeItem("validToken");
   };
 
+  const onClearErrorMessage = () => {
+    setErrorMessage("");
+  };
+
   return (
     <Fragment>
       {!emailIsValid && !tokenIsValid && (
@@ -150,6 +154,7 @@ const RequestPasswordReset = () => {
           validMessage={validMessage}
           onVerifyPasswordToken={onVerifyPasswordToken}
           onGoBack={onGoBack}
+          onClearErrorMessage={onClearErrorMessage}
         />
       )}
 

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Profile from "../components/Profile/Profile";
 import { useParams } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import { getUserProfile, getAllProfiles } from "../lib/userApi";
-import { useSelector } from "react-redux";
+import { createConnection } from "../components/Auth/LoginActions";
 
 const UserProfilePage = () => {
+  const dispatch = useDispatch();
   const params = useParams();
   const { username } = params;
   const { requestSuccess } = useSelector((state) => state.request);
@@ -22,6 +24,7 @@ const UserProfilePage = () => {
   };
 
   useEffect(() => {
+    dispatch(createConnection());
     getUserProfileDetails();
   }, [username, requestSuccess]);
 

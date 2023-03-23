@@ -10,7 +10,9 @@ import Conversation from "./Conversations/Conversation";
 import Message from "./message/Message";
 import ChatOnline from "./chatOnline/ChatOnline";
 import { io } from "socket.io-client";
+import { useDispatch } from "react-redux";
 import messengerEffect from "../../sounds/messenger.mp3";
+import { createConnection } from "../Auth/LoginActions";
 import "./Chat.css";
 
 const Chat = ({ chatMessages, roomTopic }) => {
@@ -28,8 +30,18 @@ const Chat = ({ chatMessages, roomTopic }) => {
   const [play] = useSound(ebuddy);
   const [play2] = useSound(messengerEffect);
 
+  const dispatch = useDispatch();
+
+  // dispatch(emitSocket());
+
+  const emitSocket = async () => {
+    await dispatch(createConnection());
+  };
+
   useEffect(() => {
+    emitSocket();
     // emit notification to room and other users when a new user joins room
+
     socket?.current.emit("joinRoom", {
       username: user,
       room: roomTopic,

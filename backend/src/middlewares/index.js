@@ -76,6 +76,15 @@ exports.confirmPasswordFormat = (req, res, next) => {
   next();
 };
 
+exports.aboutInputLength = (req, res, next) => {
+  const {text} = req.body 
+  if(text.trim().length > 1000){
+    return res.status(401).json({error:"you cannot exceed 1000 characters"})
+  }
+
+  next()
+}
+
 exports.newPasswordValidity = (req, res, next) => {
   if (
     req.body.newPassword.trim() !== req.body.newConfirmPassword.trim() ||
